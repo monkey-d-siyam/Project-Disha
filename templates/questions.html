@@ -16,9 +16,14 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
-<body>
+<body class="lang-en">
     <div class="ticker">
-        <div class="ticker-content">🏥 Urban Health Node: Active • April 2026 Outbreak Alert: Dengue & Measles Monitoring Engaged • Emergency Golden Hour Routing: Operational</div>
+        <div class="ticker-content" data-en="Emergency? Call 999 IMMEDIATELY • Specialized Triage Engine Live • Impact Dhaka 2026 Hackathon Demo">
+            Emergency? Call 999 IMMEDIATELY • Specialized Triage Engine Live • Impact Dhaka 2026 Hackathon Demo
+        </div>
+        <div class="ticker-content" data-bn="জরুরি অবস্থা? এখনই ৯৯৯ কল করুন • বিশেষায়িত ট্রায়াজ ইঞ্জিন লাইভ • ইমপ্যাক্ট ঢাকা ২০২৬ হ্যাকাথন">
+            জরুরি অবস্থা? এখনই ৯৯৯ কল করুন • বিশেষায়িত ট্রায়াজ ইঞ্জিন লাইভ • ইমপ্যাক্ট ঢাকা ২০২৬ হ্যাকাথন
+        </div>
     </div>
 
     <div class="app-container">
@@ -26,12 +31,15 @@
             <div class="brand" onclick="location.href='/'" style="cursor:pointer">
                 <div class="brand-icon">🏥</div>
                 <div>
-                    <h1>Disha</h1>
-                    <p style="font-family: 'Hind Siliguri', sans-serif;">সঠিক সময়ে সঠিক চিকিৎসার দিশারী</p>
+                    <h1 data-en="Disha">Disha</h1>
+                    <h1 data-bn="দিশা">দিশা</h1>
+                    <p data-en="Clinical Follow-up" data-bn="ক্লিনিকাল ফলো-আপ"></p>
                 </div>
             </div>
-            <div style="font-size: 0.7rem; font-weight: 700; background: rgba(0,0,0,0.15); padding: 4px 10px; border-radius: 20px;">
-                TRIAGE ASSIST
+            
+            <div class="lang-switcher">
+                <button class="lang-btn active" id="btn-en" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" id="btn-bn" onclick="setLanguage('bn')">বাংলা</button>
             </div>
         </header>
 
@@ -40,8 +48,10 @@
             <div id="emergency-alert-banner" class="emergency-alert-banner hidden">
                 <div class="alert-icon">🚨</div>
                 <div class="alert-text">
-                    <h3>HIGH RISK DETECTED — উচ্চ ঝুঁকি সনাক্ত</h3>
-                    <p>Immediate medical attention required. Call <strong>999</strong> or go to the nearest ER immediately.</p>
+                    <h3 data-en>HIGH RISK DETECTED</h3>
+                    <h3 data-bn>উচ্চ ঝুঁকি সনাক্ত</h3>
+                    <p data-en>Immediate medical attention required. Call <strong>999</strong> or go to the nearest ER immediately.</p>
+                    <p data-bn>অবিলম্বে চিকিৎসার প্রয়োজন। এখনই <strong>৯৯৯</strong> কল করুন অথবা নিকটস্থ হাসপাতালে যান।</p>
                 </div>
             </div>
 
@@ -49,8 +59,8 @@
             <div class="chat-bubble-row" id="instruction-bubble">
                 <div class="avatar avatar-ai">🏥</div>
                 <div class="bubble">
-                    To provide an accurate assessment, I need a few more details. Please answer the following questions.<br>
-                    সঠিক মূল্যায়নের জন্য আমার আরও কিছু তথ্যের প্রয়োজন। দয়া করে নিচের প্রশ্নগুলোর উত্তর দিন।
+                    <div data-en>To provide an accurate assessment, I need a few more details. Please answer the following questions.</div>
+                    <div data-bn>সঠিক মূল্যায়নের জন্য আমার আরও কিছু তথ্যের প্রয়োজন। দয়া করে নিচের প্রশ্নগুলোর উত্তর দিন।</div>
                 </div>
             </div>
 
@@ -60,17 +70,19 @@
                     {% for question in questions %}
                     <div class="question-group">
                         <div class="question-label-stack">
-                            <span class="question-en">{{ question.en }}</span>
-                            <span class="question-bn">{{ question.bn }}</span>
+                            <span class="question-en" data-en>{{ question.en }}</span>
+                            <span class="question-bn" data-bn>{{ question.bn }}</span>
                         </div>
                         <div class="radio-options">
                             <label class="radio-option">
                                 <input type="radio" name="{{ question.id }}" value="yes" required> 
-                                <span>Yes / হ্যাঁ</span>
+                                <span data-en>Yes</span>
+                                <span data-bn>হ্যাঁ</span>
                             </label>
                             <label class="radio-option">
                                 <input type="radio" name="{{ question.id }}" value="no" checked> 
-                                <span>No / না</span>
+                                <span data-en>No</span>
+                                <span data-bn>না</span>
                             </label>
                         </div>
                     </div>
@@ -79,7 +91,8 @@
 
                 <div class="form-actions" id="submit-actions">
                     <button type="submit" id="submit-btn" class="btn btn-primary">
-                        <span>Calculate Final Triage — ফলাফল দেখুন</span>
+                        <span data-en>Calculate Final Triage</span>
+                        <span data-bn>ফলাফল দেখুন</span>
                         <i class="ph-bold ph-check-circle"></i>
                     </button>
                 </div>
@@ -94,24 +107,28 @@
                     </div>
                     <div class="card-body-v2">
                         <div class="sect-row">
-                            <span class="sect-label">Specialist — বিশেষজ্ঞ</span>
+                            <span class="sect-label" data-en>Specialist</span>
+                            <span class="sect-label" data-bn>বিশেষজ্ঞ</span>
                             <span class="sect-val" id="urgency-dept">👨‍⚕️ --</span>
                         </div>
                         
                         <div class="sect-row">
-                            <span class="sect-label">Clinical Analysis — পর্যবেক্ষণ</span>
+                            <span class="sect-label" data-en>Clinical Analysis</span>
+                            <span class="sect-label" data-bn>পর্যবেক্ষণ</span>
                             <span class="sect-val" id="urgency-desc">--</span>
                         </div>
 
                         <div class="sect-row">
-                            <span class="sect-label">Immediate Action Plan — জরুরি পদক্ষেপ</span>
+                            <span class="sect-label" data-en>Immediate Action Plan</span>
+                            <span class="sect-label" data-bn>জরুরি পদক্ষেপ</span>
                             <div id="urgency-action-bullets" class="action-bullets">
                                 <!-- Bullets will be injected here -->
                             </div>
                         </div>
 
                         <div class="sect-row">
-                            <span class="sect-label">Recommended Facilities — নিকটস্থ হাসপাতাল</span>
+                            <span class="sect-label" data-en>Recommended Facilities</span>
+                            <span class="sect-label" data-bn>নিকটস্থ হাসপাতাল</span>
                             <div id="hospital-map"></div>
                             <div id="hospitals-list" style="display: flex; flex-direction: column; gap: 10px;">
                                 <!-- Hospital tags will be injected here -->
@@ -119,7 +136,8 @@
                         </div>
 
                         <button type="button" class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="location.href='/'">
-                            ↺ Start New Assessment — নতুন করে শুরু করুন
+                            <span data-en>↺ Start New Assessment</span>
+                            <span data-bn>↺ নতুন করে শুরু করুন</span>
                         </button>
                     </div>
                 </div>
@@ -128,14 +146,31 @@
     </div>
 
     <script>
+        function setLanguage(lang) {
+            localStorage.setItem('disha_lang', lang);
+            document.body.className = `lang-${lang}`;
+            
+            // Update buttons
+            const btnEn = document.getElementById('btn-en');
+            const btnBn = document.getElementById('btn-bn');
+            if (btnEn) btnEn.classList.toggle('active', lang === 'en');
+            if (btnBn) btnBn.classList.toggle('active', lang === 'bn');
+        }
+
+        // Initialize from local storage
+        const savedLang = localStorage.getItem('disha_lang') || 'en';
+        setLanguage(savedLang);
+
         document.getElementById('questions-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
             const statusMessage = document.getElementById('status-message');
             const resultCard = document.getElementById('final-urgency-card');
             const emergencyBanner = document.getElementById('emergency-alert-banner');
+            const currentLang = localStorage.getItem('disha_lang') || 'en';
             
-            submitBtn.innerHTML = '<span class="loading-dots">Initializing Assessment</span>';
+            const loadingText = (currentLang === 'en') ? 'Initializing Assessment' : 'মূল্যায়ন শুরু হচ্ছে';
+            submitBtn.innerHTML = `<span class="loading-dots">${loadingText}</span>`;
             submitBtn.disabled = true;
             statusMessage.style.display = 'none';
             resultCard.classList.add('hidden');
@@ -243,16 +278,17 @@
                     }, 100);
 
                 } else {
-                    statusMessage.textContent = result.message || 'An error occurred';
+                    statusMessage.textContent = (currentLang === 'en') ? (result.message || 'An error occurred') : 'একটি ত্রুটি ঘটেছে';
                     statusMessage.className = 'status-message error';
                     statusMessage.style.display = 'block';
                 }
             } catch (error) {
-                statusMessage.textContent = 'Failed to connect to the Disha Engine.';
+                statusMessage.textContent = (currentLang === 'en') ? 'Failed to connect to the Disha Engine.' : 'দিশা ইঞ্জিনের সাথে সংযোগ করতে ব্যর্থ হয়েছে।';
                 statusMessage.className = 'status-message error';
                 statusMessage.style.display = 'block';
             } finally {
-                submitBtn.innerHTML = '<span>Calculate Final Triage</span> <i class="ph-bold ph-check-circle"></i>';
+                const btnText = (currentLang === 'en') ? 'Calculate Final Triage' : 'ফলাফল দেখুন';
+                submitBtn.innerHTML = `<span>${btnText}</span> <i class="ph-bold ph-check-circle"></i>`;
                 submitBtn.disabled = false;
             }
         });

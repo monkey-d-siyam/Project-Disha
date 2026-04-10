@@ -12,9 +12,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
-<body>
+<body class="lang-en">
     <div class="ticker">
-        <div class="ticker-content">🏥 Urban Health Node: Active • April 2026 Outbreak Alert: Dengue & Measles Monitoring Engaged • Emergency Golden Hour Routing: Operational</div>
+        <div class="ticker-content" data-en="Emergency? Call 999 IMMEDIATELY • Specialized Triage Engine Live • Impact Dhaka 2026 Hackathon Demo">
+            Emergency? Call 999 IMMEDIATELY • Specialized Triage Engine Live • Impact Dhaka 2026 Hackathon Demo
+        </div>
+        <div class="ticker-content" data-bn="জরুরি অবস্থা? এখনই ৯৯৯ কল করুন • বিশেষায়িত ট্রায়াজ ইঞ্জিন লাইভ • ইমপ্যাক্ট ঢাকা ২০২৬ হ্যাকাথন">
+            জরুরি অবস্থা? এখনই ৯৯৯ কল করুন • বিশেষায়িত ট্রায়াজ ইঞ্জিন লাইভ • ইমপ্যাক্ট ঢাকা ২০২৬ হ্যাকাথন
+        </div>
     </div>
 
     <div class="app-container">
@@ -22,9 +27,16 @@
             <div class="brand">
                 <div class="brand-icon">🏥</div>
                 <div>
-                    <h1>Disha — দিশা</h1>
-                    <p style="font-family: 'Hind Siliguri', sans-serif;">সঠিক সময়ে সঠিক চিকিৎসার দিশারী</p>
+                    <h1 data-en="Disha">Disha</h1>
+                    <h1 data-bn="দিশা">দিশা</h1>
+                    <p data-en="Your Healthcare Navigator">Your Healthcare Navigator</p>
+                    <p data-bn="সঠিক চিকিৎসার দিশারী" style="font-family: 'Hind Siliguri', sans-serif;">সঠিক চিকিৎসার দিশারী</p>
                 </div>
+            </div>
+            
+            <div class="lang-switcher">
+                <button class="lang-btn active" id="btn-en" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" id="btn-bn" onclick="setLanguage('bn')">বাংলা</button>
             </div>
         </header>
 
@@ -33,11 +45,14 @@
             <div class="chat-bubble-row">
                 <div class="avatar avatar-ai">🏥</div>
                 <div class="bubble">
-                    <strong>Assalamualaikum!</strong> I am <strong>Disha</strong>, your AI healthcare navigator.<br>
-                    <strong>আসসালামু আলাইকুম!</strong> আমি <strong>দিশা</strong>, আপনার এআই স্বাস্থ্যসেবা প্রদর্শক।
-                    <br><br>
-                    Please describe your condition below. I will guide you to the right department and the nearest specialized hospital in Dhaka.<br>
-                    আপনার সমস্যাটি নিচে বর্ণনা করুন। আমি আপনাকে সঠিক বিভাগ এবং ঢাকার নিকটতম বিশেষায়িত হাসপাতালে নির্দেশ করব।
+                    <div data-en>
+                        <strong>Assalamualaikum!</strong> I am <strong>Disha</strong>, your AI healthcare navigator.<br><br>
+                        Please describe your condition below. I will guide you to the right department and the nearest specialized hospital in Dhaka.
+                    </div>
+                    <div data-bn>
+                        <strong>আসসালামু আলাইকুম!</strong> আমি <strong>দিশা</strong>, আপনার এআই স্বাস্থ্যসেবা প্রদর্শক।<br><br>
+                        আপনার সমস্যাটি নিচে বর্ণনা করুন। আমি আপনাকে সঠিক বিভাগ এবং ঢাকার নিকটতম বিশেষায়িত হাসপাতালে নির্দেশ করব।
+                    </div>
                 </div>
             </div>
 
@@ -45,40 +60,48 @@
             <form id="triage-form" class="triage-form-card">
                 <div class="form-group">
                     <label for="symptoms" class="form-label">
-                        <i class="ph-bold ph-stethoscope"></i> Describe Symptoms — আপনার উপসর্গ বর্ণনা করুন
+                        <i class="ph-bold ph-stethoscope"></i> 
+                        <span data-en>Describe Symptoms</span>
+                        <span data-bn>আপনার উপসর্গ বর্ণনা করুন</span>
                     </label>
                     <textarea 
                         id="symptoms" 
                         name="symptoms" 
                         class="form-control" 
-                        placeholder="E.g., Severe chest pain since morning / সকাল থেকে তীব্র বুকে ব্যথা" 
+                        placeholder="E.g., Severe chest pain since morning..." 
+                        data-en-placeholder="E.g., Severe chest pain since morning..."
+                        data-bn-placeholder="যেমন: সকাল থেকে তীব্র বুকে ব্যথা..."
                         required></textarea>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="age" class="form-label">
-                            <i class="ph-bold ph-calendar"></i> Age — বয়স
+                            <i class="ph-bold ph-calendar"></i> 
+                            <span data-en>Age</span>
+                            <span data-bn>বয়স</span>
                         </label>
                         <input 
                             type="number" 
                             id="age" 
                             name="age" 
                             class="form-control" 
-                            placeholder="e.g. 34" 
+                            placeholder="34" 
                             required>
                     </div>
 
                     <div class="form-group">
                         <label for="gender" class="form-label">
-                            <i class="ph-bold ph-users"></i> Gender — লিঙ্গ
+                            <i class="ph-bold ph-users"></i> 
+                            <span data-en>Gender</span>
+                            <span data-bn>লিঙ্গ</span>
                         </label>
                         <div class="select-wrapper">
                             <select id="gender" name="gender" class="form-control" required>
-                                <option value="" disabled selected>Select / নির্বাচন করুন</option>
-                                <option value="male">Male / পুরুষ</option>
-                                <option value="female">Female / মহিলা</option>
-                                <option value="other">Other / অন্যান্য</option>
+                                <option value="" disabled selected data-en="Select" data-bn="নির্বাচন করুন">Select</option>
+                                <option value="male" data-en="Male" data-bn="পুরুষ">Male</option>
+                                <option value="female" data-en="Female" data-bn="মহিলা">Female</option>
+                                <option value="other" data-en="Other" data-bn="অন্যান্য">Other</option>
                             </select>
                             <i class="ph-fill ph-caret-down select-caret"></i>
                         </div>
@@ -87,20 +110,25 @@
 
                 <div class="form-group">
                     <label for="location" class="form-label">
-                        <i class="ph-bold ph-map-pin"></i> Your Location — আপনার অবস্থান
+                        <i class="ph-bold ph-map-pin"></i> 
+                        <span data-en>Your Location</span>
+                        <span data-bn>আপনার অবস্থান</span>
                     </label>
                     <input 
                         type="text" 
                         id="location" 
                         name="location" 
                         class="form-control" 
-                        placeholder="Current area in Dhaka (e.g., Banani, Dhanmondi)" 
+                        placeholder="Area in Dhaka (e.g. Banani)" 
+                        data-en-placeholder="Area in Dhaka (e.g. Banani)"
+                        data-bn-placeholder="ঢাকার এলাকা (যেমন: বনানী)"
                         required>
                 </div>
 
                 <div class="form-actions">
                     <button type="submit" id="submit-btn" class="btn btn-primary">
-                        <span>Get Triage Guidance — নির্দেশনা পান</span>
+                        <span data-en>Get Triage Guidance</span>
+                        <span data-bn>নির্দেশনা পান</span>
                         <i class="ph-bold ph-arrow-right"></i>
                     </button>
                 </div>
@@ -109,20 +137,45 @@
             </form>
             
             <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 10px; line-height: 1.4;">
-                Disha is an AI Decision-Support tool, not a doctor. In life-threatening emergencies, call <strong>999</strong>.<br>
-                দিশা একটি এআই সিদ্ধান্ত-সহায়তা সরঞ্জাম মাত্র। জীবন-ঘাতী জরুরি অবস্থায় এখনই <strong>৯৯৯</strong> কল করুন।
+                <span data-en>Disha is an AI Decision-Support tool, not a doctor. In life-threatening emergencies, call <strong>999</strong>.</span>
+                <span data-bn>দিশা একটি এআই সিদ্ধান্ত-সহায়তা সরঞ্জাম মাত্র। জীবন-ঘাতী জরুরি অবস্থায় এখনই <strong>৯৯৯</strong> কল করুন।</span>
             </p>
         </main>
     </div>
 
     <script>
+        function setLanguage(lang) {
+            localStorage.setItem('disha_lang', lang);
+            document.body.className = `lang-${lang}`;
+            
+            // Update buttons
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-bn').classList.toggle('active', lang === 'bn');
+            
+            // Update placeholders
+            document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+                el.placeholder = (lang === 'en') ? el.getAttribute('data-en-placeholder') : el.getAttribute('data-bn-placeholder');
+            });
+
+            // Update option texts (options don't always support [data-lang] display hiding)
+            document.querySelectorAll('option[data-en]').forEach(opt => {
+                opt.textContent = (lang === 'en') ? opt.getAttribute('data-en') : opt.getAttribute('data-bn');
+            });
+        }
+
+        // Initialize from local storage
+        const savedLang = localStorage.getItem('disha_lang') || 'en';
+        setLanguage(savedLang);
+
         document.getElementById('triage-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
             const statusMessage = document.getElementById('status-message');
+            const currentLang = localStorage.getItem('disha_lang') || 'en';
             
             // UI state: loading
-            submitBtn.innerHTML = '<span class="loading-dots">Initializing Triage Node</span>';
+            const loadingText = (currentLang === 'en') ? 'Initializing Triage Node' : 'ট্রায়াজ নোড চালু হচ্ছে';
+            submitBtn.innerHTML = `<span class="loading-dots">${loadingText}</span>`;
             submitBtn.disabled = true;
             statusMessage.className = 'status-message';
             statusMessage.style.display = 'none';
@@ -153,17 +206,18 @@
                         document.getElementById('triage-form').reset();
                     }
                 } else {
-                    statusMessage.textContent = result.message || 'An error occurred';
+                    statusMessage.textContent = (currentLang === 'en') ? (result.message || 'An error occurred') : 'একটি ত্রুটি ঘটেছে';
                     statusMessage.className = 'status-message error';
                     statusMessage.style.display = 'block';
                 }
             } catch (error) {
-                statusMessage.textContent = 'Failed to connect to the Disha Engine.';
+                statusMessage.textContent = (currentLang === 'en') ? 'Failed to connect to the Disha Engine.' : 'দিশা ইঞ্জিনের সাথে সংযোগ করতে ব্যর্থ হয়েছে।';
                 statusMessage.className = 'status-message error';
                 statusMessage.style.display = 'block';
             } finally {
                 if (!window.location.href.includes('questions')) {
-                    submitBtn.innerHTML = '<span>Get Triage Guidance</span> <i class="ph-bold ph-arrow-right"></i>';
+                    const btnText = (currentLang === 'en') ? 'Get Triage Guidance' : 'নির্দেশনা পান';
+                    submitBtn.innerHTML = `<span>${btnText}</span> <i class="ph-bold ph-arrow-right"></i>`;
                     submitBtn.disabled = false;
                 }
             }
