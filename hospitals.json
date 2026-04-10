@@ -6,7 +6,9 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "General Physician", "Neurology", "Cardiology", "Surgery / Emergency", "Orthopedics", "Gastroenterology", "Pulmonology", "Ophthalmology", "Obstetrics & Gynecology", "Pediatrics", "Dermatology"],
         "address": "Secretariat Road, Dhaka 1000",
-        "contact_number": "16263"
+        "contact_number": "16263",
+        "lat": 23.7261,
+        "lng": 90.3956
     },
     {
         "id": "h_002",
@@ -15,7 +17,9 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Obstetrics & Gynecology", "General Physician"],
         "address": "18/F, Bir Uttam Qazi Nuruzzaman Sarak, Dhaka 1205",
-        "contact_number": "+880 9610-010616"
+        "contact_number": "+880 9610-010616",
+        "lat": 23.7524,
+        "lng": 90.3858
     },
     {
         "id": "h_003",
@@ -24,7 +28,9 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "Cardiology", "Pulmonology"],
         "address": "House-01, Road-04, Dhanmondi, Dhaka 1205",
-        "contact_number": "+880 1766-662111"
+        "contact_number": "+880 1766-662111",
+        "lat": 23.7461,
+        "lng": 90.3742
     },
     {
         "id": "h_004",
@@ -33,7 +39,9 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "Neurology"],
         "address": "Sher-e-Bangla Nagar, Agargaon, Dhaka",
-        "contact_number": "+880 2-9140752"
+        "contact_number": "+880 2-9140752",
+        "lat": 23.7740,
+        "lng": 90.3664
     },
     {
         "id": "h_005",
@@ -42,7 +50,9 @@
         "has_er": false,
         "departments": ["Ophthalmology", "General Physician"],
         "address": "Khamar Bari Rd, Dhaka 1215",
-        "contact_number": "+880 9610-998333"
+        "contact_number": "+880 9610-998333",
+        "lat": 23.7598,
+        "lng": 90.3875
     },
     {
         "id": "h_006",
@@ -51,7 +61,9 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "Cardiology", "General Physician", "Orthopedics", "Surgery / Emergency"],
         "address": "Plot No. H1, Ananna Residential Area, CDA, Hathazari, Chattogram",
-        "contact_number": "10663"
+        "contact_number": "10663",
+        "lat": 22.4686,
+        "lng": 91.9528
     },
     {
         "id": "h_007",
@@ -60,7 +72,9 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "General Physician", "Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Surgery / Emergency"],
         "address": "K.B. Fazlul Kader Road, Panchlaish, Chattogram",
-        "contact_number": "+880 31-2550302"
+        "contact_number": "+880 31-2550302",
+        "lat": 22.3533,
+        "lng": 91.8347
     },
     {
         "id": "h_008",
@@ -69,7 +83,9 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "General Physician", "Surgery / Emergency", "Orthopedics", "Cardiology", "Pulmonology", "Obstetrics & Gynecology"],
         "address": "Kajolshah, Sylhet 3100",
-        "contact_number": "+880 821-713667"
+        "contact_number": "+880 821-713667",
+        "lat": 24.8949,
+        "lng": 91.8687
     },
     {
         "id": "h_009",
@@ -78,7 +94,9 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "General Physician", "Cardiology", "Neurology", "Pediatrics"],
         "address": "Mir Box Tula Road, Sylhet",
-        "contact_number": "+880 1931-225555"
+        "contact_number": "+880 1931-225555",
+        "lat": 24.9045,
+        "lng": 91.8611
     },
     {
         "id": "h_010",
@@ -87,7 +105,9 @@
         "has_er": false,
         "departments": ["General Physician", "Gastroenterology", "Dermatology", "Pediatrics"],
         "address": "House # 02, Block # A, Section # 10, Mirpur, Dhaka",
-        "contact_number": "+880 9613-787806"
+        "contact_number": "+880 9613-787806",
+        "lat": 23.8066,
+        "lng": 90.3617
     },
     {
         "id": "h_011",
@@ -96,6 +116,8 @@
         "has_er": true,
         "departments": ["Emergency Medicine", "Dermatology / Emergency", "Surgery / Emergency"],
         "address": "Bakshibazar, Dhaka 1000",
-        "contact_number": "+880 2-55112108"
+        "contact_number": "+880 2-55112108",
+        "lat": 23.7227,
+        "lng": 90.3963
     }
 ]

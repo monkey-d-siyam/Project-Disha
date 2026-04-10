@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Leaflet.js Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         .question-group {
             display: flex;
@@ -62,10 +65,62 @@
             gap: 0.5rem;
             margin-bottom: 0.5rem;
         }
-        .urgency-desc {
-            color: #d1d5db;
-            font-size: 0.9rem;
-            line-height: 1.5;
+        .theme-emergency { 
+            border: 2px solid rgba(239, 68, 68, 0.6) !important; 
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.25); 
+        }
+        .theme-emergency .action-box { background: rgba(239, 68, 68, 0.15) !important; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .theme-emergency .urgency-level { color: #fca5a5; }
+
+        .theme-urgent { 
+            border: 2px solid rgba(249, 115, 22, 0.6) !important; 
+            box-shadow: 0 0 30px rgba(249, 115, 22, 0.25); 
+        }
+        .theme-urgent .action-box { background: rgba(249, 115, 22, 0.15) !important; border: 1px solid rgba(249, 115, 22, 0.3); }
+        .theme-urgent .urgency-level { color: #fdba74; }
+
+        .theme-routine { 
+            border: 2px solid rgba(59, 130, 246, 0.6) !important; 
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.25); 
+        }
+        .theme-routine .action-box { background: rgba(59, 130, 246, 0.15) !important; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .theme-routine .urgency-level { color: #93c5fd; }
+
+        .theme-home { 
+            border: 2px solid rgba(34, 197, 94, 0.6) !important; 
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.25); 
+        }
+        .theme-home .action-box { background: rgba(34, 197, 94, 0.15) !important; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .theme-home .urgency-level { color: #86efac; }
+
+        #hospital-map {
+            height: 260px;
+            border-radius: 10px;
+            margin-top: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            overflow: hidden;
+        }
+        /* Override Leaflet popup to match dark theme */
+        .leaflet-popup-content-wrapper {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .leaflet-popup-tip { background: #1e293b; }
+        .leaflet-popup-content { margin: 10px 14px; font-size: 0.85rem; line-height: 1.5; }
+        .leaflet-popup-content strong { color: #fff; }
+        .leaflet-popup-content .er-badge {
+            display: inline-block;
+            background: rgba(239,68,68,0.25);
+            color: #fca5a5;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 99px;
+            margin-top: 4px;
+            border: 1px solid rgba(239,68,68,0.4);
         }
     </style>
 </head>
@@ -176,9 +231,26 @@
                 <div id="final-urgency-card" class="final-urgency-card">
                     <div class="urgency-level" id="urgency-level"></div>
                     <p class="urgency-desc" id="urgency-desc"></p>
-                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1)">
-                        <a href="/" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem;">
-                            <i class="ph ph-arrow-left"></i> Start New Triage
+                    
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed rgba(255,255,255,0.2)">
+                        <p style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 0.25rem;">Recommended Department:</p>
+                        <p id="urgency-dept" style="font-weight: 600; font-size: 1.1rem; color: #fff;"></p>
+                    </div>
+                    
+                    <div class="action-box" style="margin-top: 1rem; padding: 1rem; border-radius: 8px;">
+                        <p style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 0.25rem;">Immediate Action:</p>
+                        <p id="urgency-action" style="font-weight: 500; font-size: 1.05rem; color: #fff;"></p>
+                    </div>
+                    
+                    <div style="margin-top: 1rem;" id="hospitals-container">
+                        <p style="font-size: 0.9rem; color: #9ca3af; margin-bottom: 0;"><i class="ph ph-buildings"></i> Recommended Facilities Near You:</p>
+                        <div id="hospital-map"></div>
+                        <div id="hospitals-list" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.75rem;"></div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; text-align: center;">
+                        <a href="/" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+                            <i class="ph ph-arrow-left"></i> Start New Assessment
                         </a>
                     </div>
                 </div>
@@ -214,15 +286,107 @@
                 const result = await response.json();
                 
                 if (response.ok) {
+                    // Apply dynamic theme coloring based on urgency
+                    resultCard.classList.remove('theme-emergency', 'theme-urgent', 'theme-routine', 'theme-home-care'); // reset
+                    
+                    const levelNameUrl = result.urgency.level.toLowerCase().replace(' ', '-'); // "Home Care" -> "home-care"
+                    if (levelNameUrl === 'home-care') {
+                        resultCard.classList.add('theme-home');
+                    } else {
+                        resultCard.classList.add(`theme-${levelNameUrl}`);
+                    }
+                    
                     // Show final result
                     document.getElementById('urgency-level').innerHTML = `${result.urgency.color} ${result.urgency.level}`;
                     document.getElementById('urgency-desc').textContent = result.urgency.description;
+                    document.getElementById('urgency-dept').innerHTML = `<i class="ph ph-stethoscope"></i> ${result.recommendation.department}`;
+                    document.getElementById('urgency-action').innerHTML = `<i class="ph ph-warning-circle" style="color: #eab308"></i> ${result.recommendation.action}`;
                     
-                    // Hide the form sections
+                    // Render hospitals list
+                    const hospList = document.getElementById('hospitals-list');
+                    hospList.innerHTML = '';
+                    if (result.hospitals && result.hospitals.length > 0) {
+                        result.hospitals.forEach(hosp => {
+                            const hCard = document.createElement('div');
+                            hCard.style.padding = '1rem';
+                            hCard.style.background = 'rgba(255,255,255,0.05)';
+                            hCard.style.borderRadius = '8px';
+                            hCard.style.border = '1px solid rgba(255,255,255,0.1)';
+                            
+                            hCard.innerHTML = `
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div>
+                                        <h4 style="margin: 0 0 0.25rem 0; font-size: 1rem; color: #fff;">${hosp.name}</h4>
+                                        <p style="margin: 0; font-size: 0.85rem; color: #9ca3af;"><i class="ph ph-map-pin"></i> ${hosp.address}</p>
+                                    </div>
+                                    <a href="tel:${hosp.contact_number}" style="display: flex; align-items: center; justify-content: center; background: rgba(59, 130, 246, 0.2); color: #60a5fa; width: 36px; height: 36px; border-radius: 50%; text-decoration: none;">
+                                        <i class="ph-fill ph-phone-call" style="font-size: 1.2rem;"></i>
+                                    </a>
+                                </div>
+                            `;
+                            hospList.appendChild(hCard);
+                        });
+                    } else {
+                        hospList.innerHTML = '<p style="color: #9ca3af; font-size: 0.85rem;">No direct matching facilities found. Please contact emergency services.</p>';
+                    }
+                    
+                    // Hide the form sections first (before map renders)
                     document.querySelector('.questions-list').style.display = 'none';
                     submitBtn.parentElement.style.display = 'none';
-                    
-                    resultCard.classList.add('visible');
+
+                    // --- Leaflet Map Initialization ---
+                    // Destroy previous map instance if it exists
+                    if (window._dishaMap) {
+                        window._dishaMap.remove();
+                        window._dishaMap = null;
+                    }
+
+                    if (result.hospitals && result.hospitals.length > 0) {
+                        // Make card visible but transparent so the map container has dimensions 
+                        resultCard.classList.add('visible');
+                        resultCard.style.visibility = 'hidden';
+
+                        setTimeout(() => {
+                            const map = L.map('hospital-map', { zoomControl: true, scrollWheelZoom: false });
+                            window._dishaMap = map;
+
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                                maxZoom: 18
+                            }).addTo(map);
+
+                            const bounds = [];
+
+                            result.hospitals.forEach(hosp => {
+                                if (hosp.lat && hosp.lng) {
+                                    const latlng = [hosp.lat, hosp.lng];
+                                    bounds.push(latlng);
+
+                                    const markerColor = hosp.has_er ? '#ef4444' : '#3b82f6';
+                                    const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="36" fill="${markerColor}"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>`;
+                                    const icon = L.divIcon({
+                                        html: svgIcon,
+                                        className: '',
+                                        iconSize: [28, 36],
+                                        iconAnchor: [14, 36],
+                                        popupAnchor: [0, -36]
+                                    });
+
+                                    const erBadge = hosp.has_er ? '<br><span class="er-badge">🚨 ER Available</span>' : '';
+                                    L.marker(latlng, { icon }).addTo(map)
+                                        .bindPopup(`<strong>${hosp.name}</strong><br><span style="color:#9ca3af">${hosp.address}</span>${erBadge}`);
+                                }
+                            });
+
+                            if (bounds.length > 0) {
+                                map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+                            }
+
+                            resultCard.style.visibility = 'visible';
+                        }, 50);
+                    } else {
+                        resultCard.classList.add('visible');
+                    }
                 } else {
                     statusMessage.textContent = result.message || 'An error occurred';
                     statusMessage.className = 'status-message error';

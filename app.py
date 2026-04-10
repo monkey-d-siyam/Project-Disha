@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 import os
 from symptom_parser import SymptomParser
 from triage_engine import TriageEngine
+from recommendation_engine import RecommendationEngine
+from hospital_matcher import HospitalMatcher
 
 app = Flask(__name__)
 # In production, use a strong random secret key
@@ -9,6 +11,8 @@ app.secret_key = os.urandom(24)
 
 parser = SymptomParser()
 triage = TriageEngine()
+recommender = RecommendationEngine()
+matcher = HospitalMatcher()
 
 @app.route('/')
 def index():
@@ -58,6 +62,7 @@ def assess():
     try:
         data = request.json
         base_symptoms = session.get('parsed_symptoms', [])
+        saved_location = session.get('location', '')
         
         # Extract Yes/No answers and map them directly into symptoms
         explicit_findings = []
@@ -79,17 +84,28 @@ def assess():
         # Sprint 3/4: Determine accurate urgency mapping
         urgency = triage.determine_urgency(combined_symptoms)
         
+        # Sprint 5: Generate Doctor/Department and Action Recommendations
+        recommendation = recommender.get_recommendation(combined_symptoms, urgency['level'])
+        
+        # Sprint 6: Find Matching Hospitals
+        hospitals = matcher.find_hospitals(saved_location, recommendation['department'], urgency['level'])
+        
         # Final log
         print("--- Final Triage Assessment ---")
         print(f"Combined Symptoms Context: {combined_symptoms}")
         print(f"Urgency Result: {urgency['level']} {urgency['color']}")
+        print(f"Recommended Dept: {recommendation['department']}")
+        print(f"Immediate Action: {recommendation['action']}")
+        print(f"Found Hospitals: {len(hospitals)}")
         print("-------------------------------")
         
         return jsonify({
             "status": "success",
             "message": "Final assessment complete.",
             "combined_symptoms": combined_symptoms,
-            "urgency": urgency
+            "urgency": urgency,
+            "recommendation": recommendation,
+            "hospitals": hospitals
         }), 200
         
     except Exception as e:
