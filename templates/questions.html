@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disha AI | Follow-up Questions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .question-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .question-group:last-of-type {
+            border-bottom: none;
+        }
+        .question-label {
+            font-size: 0.95rem;
+            color: #d1d5db;
+            flex: 1;
+            padding-right: 1rem;
+        }
+        .radio-options {
+            display: flex;
+            gap: 1rem;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .radio-option input[type="radio"] {
+            accent-color: var(--primary-color);
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+        }
+        .final-urgency-card {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+        .final-urgency-card.visible {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .urgency-level {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .urgency-desc {
+            color: #d1d5db;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <main class="triage-card">
+            
+            <header class="card-header">
+                <div class="logo-wrapper" style="background: rgba(234, 179, 8, 0.2); color: #eab308;">
+                    <i class="ph-fill ph-question heartbeat-icon"></i>
+                </div>
+                <h1>Follow-up Questions</h1>
+                <p>Please answer these quick questions for an accurate assessment.</p>
+            </header>
+
+            <form id="questions-form" class="triage-form">
+                
+                <div class="questions-list">
+                    <!-- Q1 -->
+                    <div class="question-group">
+                        <span class="question-label">Are you experiencing severe breathing difficulty?</span>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="breathing_difficulty" value="yes" required> Yes
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="breathing_difficulty" value="no" checked> No
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Q2 -->
+                    <div class="question-group">
+                        <span class="question-label">Is there severe or active bleeding?</span>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="bleeding" value="yes" required> Yes
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="bleeding" value="no" checked> No
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Q3 -->
+                    <div class="question-group">
+                        <span class="question-label">Did the patient act confused or experience unconsciousness?</span>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="unconsciousness" value="yes" required> Yes
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="unconsciousness" value="no" checked> No
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Q4 -->
+                    <div class="question-group">
+                        <span class="question-label">Are you experiencing severe, unbearable pain?</span>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="severe_pain" value="yes" required> Yes
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="severe_pain" value="no" checked> No
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Q5 -->
+                    <div class="question-group">
+                        <span class="question-label">Are you currently pregnant?</span>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="pregnancy" value="yes" required> Yes
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="pregnancy" value="no" checked> No
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Q6 -->
+                    <div class="question-group">
+                        <span class="question-label">Is the patient a child under 12 years old?</span>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="child" value="yes" required> Yes
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="child" value="no" checked> No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions" style="margin-top: 2rem;">
+                    <button type="submit" id="submit-btn" class="btn btn-primary">
+                        <span>Get Final Results</span>
+                        <i class="ph-bold ph-check-circle"></i>
+                    </button>
+                </div>
+                
+                <div id="status-message" class="status-message hidden"></div>
+                
+                <!-- Final Result Card -->
+                <div id="final-urgency-card" class="final-urgency-card">
+                    <div class="urgency-level" id="urgency-level"></div>
+                    <p class="urgency-desc" id="urgency-desc"></p>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1)">
+                        <a href="/" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem;">
+                            <i class="ph ph-arrow-left"></i> Start New Triage
+                        </a>
+                    </div>
+                </div>
+                
+            </form>
+            
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('questions-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            const statusMessage = document.getElementById('status-message');
+            const resultCard = document.getElementById('final-urgency-card');
+            
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            statusMessage.className = 'status-message hidden';
+            resultCard.classList.remove('visible');
+            
+            // Collect form data
+            const formData = new FormData(e.target);
+            const payload = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/assess', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Show final result
+                    document.getElementById('urgency-level').innerHTML = `${result.urgency.color} ${result.urgency.level}`;
+                    document.getElementById('urgency-desc').textContent = result.urgency.description;
+                    
+                    // Hide the form sections
+                    document.querySelector('.questions-list').style.display = 'none';
+                    submitBtn.parentElement.style.display = 'none';
+                    
+                    resultCard.classList.add('visible');
+                } else {
+                    statusMessage.textContent = result.message || 'An error occurred';
+                    statusMessage.className = 'status-message error';
+                }
+            } catch (error) {
+                statusMessage.textContent = 'Failed to connect to the server.';
+                statusMessage.className = 'status-message error';
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

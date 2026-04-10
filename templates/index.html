@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disha AI | Intelligent Triage</title>
+    <!-- Use Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Phosphor Icons for UI polish -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Modern Glassmorphism Card -->
+        <main class="triage-card">
+            
+            <header class="card-header">
+                <div class="logo-wrapper">
+                    <i class="ph-fill ph-heartbeat heartbeat-icon"></i>
+                </div>
+                <h1>Disha AI</h1>
+                <p>Describe your condition. We'll guide you instantly.</p>
+            </header>
+
+            <form id="triage-form" class="triage-form">
+                
+                <!-- Symptoms Field (Primary) -->
+                <div class="form-group symptoms-group">
+                    <label for="symptoms" class="form-label">
+                        <i class="ph ph-stethoscope"></i> Symptoms
+                    </label>
+                    <textarea 
+                        id="symptoms" 
+                        name="symptoms" 
+                        class="form-control textarea" 
+                        placeholder="E.g., Severe chest pain, shortness of breath..." 
+                        rows="4"
+                        required></textarea>
+                    <span class="form-help">Please describe your symptoms in English or Bangla.</span>
+                </div>
+
+                <div class="form-row">
+                    <!-- Age Field -->
+                    <div class="form-group age-group">
+                        <label for="age" class="form-label">
+                            <i class="ph ph-calendar"></i> Age
+                        </label>
+                        <input 
+                            type="number" 
+                            id="age" 
+                            name="age" 
+                            class="form-control outline-input" 
+                            placeholder="e.g. 34" 
+                            required>
+                    </div>
+
+                    <!-- Gender Field -->
+                    <div class="form-group gender-group">
+                        <label for="gender" class="form-label">
+                            <i class="ph ph-users"></i> Gender
+                        </label>
+                        <div class="select-wrapper">
+                            <select id="gender" name="gender" class="form-control outline-input" required>
+                                <option value="" disabled selected>Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <i class="ph ph-caret-down select-caret"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Field -->
+                <div class="form-group location-group">
+                    <label for="location" class="form-label">
+                        <i class="ph ph-map-pin"></i> Location
+                    </label>
+                    <div class="input-with-icon">
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            class="form-control outline-input" 
+                            placeholder="Current city or area" 
+                            required>
+                        <button type="button" class="btn-icon" aria-label="Use current location" title="Locate me">
+                            <i class="ph-bold ph-crosshair"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                    <button type="submit" id="submit-btn" class="btn btn-primary">
+                        <span>Get Triage Guidance</span>
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <!-- Response status display -->
+                <div id="status-message" class="status-message hidden"></div>
+            </form>
+            
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('triage-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            const statusMessage = document.getElementById('status-message');
+            
+            // UI state: loading
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            statusMessage.className = 'status-message hidden';
+            
+            const payload = {
+                symptoms: document.getElementById('symptoms').value,
+                age: document.getElementById('age').value,
+                gender: document.getElementById('gender').value,
+                location: document.getElementById('location').value
+            };
+
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    if (result.status === "redirect") {
+                        window.location.href = result.url;
+                    } else {
+                        statusMessage.textContent = result.message;
+                        statusMessage.className = 'status-message success';
+                        document.getElementById('triage-form').reset();
+                    }
+                } else {
+                    statusMessage.textContent = result.message || 'An error occurred';
+                    statusMessage.className = 'status-message error';
+                }
+            } catch (error) {
+                statusMessage.textContent = 'Failed to connect to the server.';
+                statusMessage.className = 'status-message error';
+            } finally {
+                // UI state: reset
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
