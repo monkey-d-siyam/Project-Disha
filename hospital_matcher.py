@@ -1,14 +1,19 @@
+from __future__ import annotations
 import json
 import os
 
 class HospitalMatcher:
-    def __init__(self, json_path: str = "hospitals.json"):
+    def __init__(self, json_path: str | None = None):
+        # Resolve path relative to this module's directory so it works
+        # regardless of which directory Flask is launched from.
+        if json_path is None:
+            json_path = os.path.join(os.path.dirname(__file__), 'hospitals.json')
         # Load the dataset
         if os.path.exists(json_path):
             with open(json_path, 'r', encoding='utf-8') as f:
-                self.hospitals = json.load(f)
+                self.hospitals: list[dict] = json.load(f)
         else:
-            self.hospitals = []
+            self.hospitals: list[dict] = []
 
     def find_hospitals(self, location_query: str, target_department: str, urgency_level: str) -> list[dict]:
         """

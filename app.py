@@ -1,3 +1,4 @@
+from __future__ import annotations
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import os
 from symptom_parser import SymptomParser
@@ -6,8 +7,8 @@ from recommendation_engine import RecommendationEngine
 from hospital_matcher import HospitalMatcher
 
 app = Flask(__name__)
-# In production, use a strong random secret key
-app.secret_key = os.urandom(24) 
+# Use stable secret key from environment; fallback for local dev only
+app.secret_key = os.environ.get('DISHA_SECRET_KEY', 'disha-dev-local-secret-2024')
 
 parser = SymptomParser()
 triage = TriageEngine()
@@ -18,10 +19,27 @@ matcher = HospitalMatcher()
 def index():
     return render_template('index.html')
 
+@app.route('/health')
+def health():
+    """Sprint 9: System health check — verifies all modules are loaded."""
+    return jsonify({
+        "status": "ok",
+        "modules": {
+            "symptom_parser": parser is not None,
+            "triage_engine": triage is not None,
+            "recommendation_engine": recommender is not None,
+            "hospital_matcher": matcher is not None and len(matcher.hospitals) > 0
+        },
+        "hospital_count": len(matcher.hospitals)
+    }), 200
+
 @app.route('/submit', methods=['POST'])
 def submit():
     try:
-        data = request.json
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({"status": "error", "message": "Invalid or missing JSON body."}), 400
+
         symptoms = data.get('symptoms', '')
         age = data.get('age', '')
         gender = data.get('gender', '')
@@ -60,7 +78,10 @@ def questions():
 @app.route('/assess', methods=['POST'])
 def assess():
     try:
-        data = request.json
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({"status": "error", "message": "Invalid or missing JSON body."}), 400
+
         base_symptoms = session.get('parsed_symptoms', [])
         saved_location = session.get('location', '')
         
@@ -92,8 +113,11 @@ def assess():
         
         # Final log
         print("--- Final Triage Assessment ---")
-        print(f"Combined Symptoms Context: {combined_symptoms}")
-        print(f"Urgency Result: {urgency['level']} {urgency['color']}")
+        print(f"Combined Symptoms: {combined_symptoms}")
+        try:
+            print(f"Urgency: {urgency['level']} {urgency['color']}")
+        except UnicodeEncodeError:
+            print(f"Urgency: {urgency['level']}")
         print(f"Recommended Dept: {recommendation['department']}")
         print(f"Immediate Action: {recommendation['action']}")
         print(f"Found Hospitals: {len(hospitals)}")

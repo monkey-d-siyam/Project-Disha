@@ -1,3 +1,4 @@
+from __future__ import annotations
 class RecommendationEngine:
     def __init__(self):
         # Basic mapping of priority symptoms to specialized departments

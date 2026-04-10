@@ -1,3 +1,4 @@
+from __future__ import annotations
 class TriageEngine:
     def __init__(self):
         # We define severity based on specific symptom combinations or individual symptoms
@@ -8,7 +9,7 @@ class TriageEngine:
         Takes a list of structured symptoms and returns the urgency level determination.
         """
         if not parsed_symptoms:
-            return {"level": "Unknown", "color": "⚪", "description": "No symptoms provided."}
+            return {"level": "Home Care", "color": "🟢", "description": "No symptoms provided. Rest and monitor your condition."}
             
         symptoms_set = set(parsed_symptoms)
         
@@ -37,7 +38,8 @@ class TriageEngine:
             "burn",
             "chest_tightness",
             {"vomiting", "fever"},
-            "cut" # Depending on severity, let's treat a raw 'cut' as urgent to be safe without follow-ups
+            {"child", "fever"},   # child with fever is clinically Urgent
+            "cut"
         ]
         
         if self._check_conditions(symptoms_set, urgent_conditions):
