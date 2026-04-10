@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disha — Healthcare Navigation for Dhaka</title>
+  <meta name="description" content="Disha is an AI-powered healthcare navigation assistant helping the people of Dhaka, Bangladesh find the right care at the right time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:       #2a9d8f;
+      --primary-light: #e8f7f5;
+      --primary-mid:   #52b8ac;
+      --accent:        #264653;
+      --accent-light:  #f0f7f6;
+      --bg:            #f4faf9;
+      --white:         #ffffff;
+      --text:          #1a2e2c;
+      --text-muted:    #5a7875;
+      --border:        #c9e8e4;
+      --shadow:        rgba(42,157,143,0.12);
+      --shadow-md:     rgba(42,157,143,0.18);
+      --green:         #2a9d8f;
+      --green-bg:      #e6f7f5;
+      --yellow:        #e9c46a;
+      --yellow-bg:     #fef8e7;
+      --red:           #e76f51;
+      --red-bg:        #fdf0ec;
+      --radius:        16px;
+      --radius-sm:     10px;
+      --transition:    0.25s ease;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Layout Shell ──────────────────────────────────────── */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--white);
+      box-shadow: 0 0 60px rgba(0,0,0,0.07);
+      position: relative;
+    }
+
+    /* ─── Header ────────────────────────────────────────────── */
+    .header {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+      padding: 18px 24px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      pointer-events: none;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; left: 30%;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+
+    .logo {
+      width: 46px; height: 46px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      backdrop-filter: blur(4px);
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .header-text { flex: 1; }
+    .header-text h1 {
+      color: #fff;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header-text p {
+      color: rgba(255,255,255,0.78);
+      font-size: 0.75rem;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+    .status-badge {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.25);
+      display: flex; align-items: center; gap: 5px;
+      flex-shrink: 0;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      background: #6fcf97;
+      border-radius: 50%;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.8); }
+    }
+
+    /* ─── Context Banner ─────────────────────────────────────── */
+    .context-banner {
+      background: linear-gradient(90deg, var(--primary-light), #e8f5f3);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      font-size: 0.73rem;
+      color: var(--primary);
+      font-weight: 500;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* ─── Chat Area ─────────────────────────────────────────── */
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+    .chat-area::-webkit-scrollbar { width: 4px; }
+    .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+    /* ─── Bubbles ────────────────────────────────────────────── */
+    .bubble-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      animation: fadeSlide 0.35s ease both;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .bubble-row.user { flex-direction: row-reverse; }
+
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .avatar.disha {
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      color: white;
+    }
+    .avatar.user-av {
+      background: linear-gradient(135deg, #6b9fa8, #4a8795);
+      color: white;
+    }
+
+    .bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      position: relative;
+    }
+    .bubble.disha-bubble {
+      background: var(--white);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+    .bubble.user-bubble {
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      color: white;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 12px rgba(42,157,143,0.25);
+    }
+    .bubble-time {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+    .bubble-row.user .bubble-time { text-align: right; }
+
+    /* ─── Thinking Animation ─────────────────────────────────── */
+    .thinking {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-style: italic;
+    }
+    .dots span {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+      margin: 0 1px;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.15s; }
+    .dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+      40% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ─── Result Card ────────────────────────────────────────── */
+    .result-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 4px 20px var(--shadow);
+      width: 100%;
+      margin-top: 4px;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      padding: 14px 18px;
+      color: white;
+      font-size: 0.82rem;
+      font-weight: 500;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+    .card-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+    }
+    .card-value {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .urgency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .urgency-badge.low    { background: var(--green-bg); color: var(--green); }
+    .urgency-badge.medium { background: var(--yellow-bg); color: #b38600; }
+    .urgency-badge.high   { background: var(--red-bg); color: var(--red); }
+
+    .cost-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    .advice-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .advice-list li {
+      font-size: 0.85rem;
+      color: var(--text);
+      display: flex;
+      gap: 8px;
+      line-height: 1.5;
+    }
+    .advice-list li::before {
+      content: '✓';
+      color: var(--primary);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .risk-box {
+      background: var(--red-bg);
+      border-left: 3px solid var(--red);
+      padding: 10px 12px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.82rem;
+      color: #c0442c;
+      line-height: 1.5;
+    }
+
+    .where-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid rgba(42,157,143,0.3);
+    }
+
+    .dhaka-note {
+      background: var(--accent-light);
+      border: 1px solid rgba(38,70,83,0.15);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      font-size: 0.76rem;
+      color: var(--accent);
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      line-height: 1.5;
+    }
+
+    .card-divider {
+      height: 1px;
+      background: var(--border);
+      opacity: 0.6;
+    }
+
+    .try-another-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      padding: 9px 18px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-top: 4px;
+      align-self: flex-start;
+    }
+    .try-another-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px var(--shadow-md);
+    }
+
+    /* ─── Quick Chips ─────────────────────────────────────────── */
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 4px;
+      animation: fadeSlide 0.35s ease both;
+    }
+    .chip {
+      padding: 7px 14px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--primary);
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .chip:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* ─── Input Bar ──────────────────────────────────────────── */
+    .input-bar {
+      padding: 12px 16px;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+    .input-wrap {
+      flex: 1;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px 14px;
+      gap: 8px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .input-wrap:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(42,157,143,0.12);
+    }
+    #user-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 0.875rem;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      max-height: 100px;
+      min-height: 22px;
+      line-height: 1.5;
+    }
+    #user-input::placeholder { color: #a0bab8; }
+
+    .send-btn {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+    .send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 14px var(--shadow-md); }
+    .send-btn:active { transform: scale(0.97); }
+    .send-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .input-hint {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      padding: 0 4px 4px;
+      text-align: center;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 500px) {
+      .bubble { max-width: 90%; }
+      .header { padding: 14px 16px; }
+      .header-text h1 { font-size: 1.2rem; }
+      .status-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">🏥</div>
+    <div class="header-text">
+      <h1>Disha</h1>
+      <p>Guiding you to the right care, at the right time</p>
+    </div>
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      AI Active
+    </div>
+  </header>
+
+  <!-- Context Banner -->
+  <div class="context-banner">
+    📍 Based on typical healthcare conditions in Dhaka, Bangladesh
+  </div>
+
+  <!-- Chat Area -->
+  <div class="chat-area" id="chat-area"></div>
+
+  <!-- Input -->
+  <div style="flex-shrink:0">
+    <div class="input-bar">
+      <div class="input-wrap">
+        <textarea
+          id="user-input"
+          placeholder="Type your symptoms, age, and duration…"
+          rows="1"
+          aria-label="Type your message"
+        ></textarea>
+      </div>
+      <button class="send-btn" id="send-btn" aria-label="Send message" title="Send">
+        ➤
+      </button>
+    </div>
+    <p class="input-hint">Disha is not a doctor · Always consult a medical professional for serious concerns</p>
+  </div>
+
+</div>
+
+<script>
+// ─── Utility ───────────────────────────────────────────────────────────────
+function now() {
+  return new Date().toLocaleTimeString('en-BD', { hour: '2-digit', minute: '2-digit' });
+}
+
+function scrollBottom() {
+  const ca = document.getElementById('chat-area');
+  setTimeout(() => ca.scrollTo({ top: ca.scrollHeight, behavior: 'smooth' }), 50);
+}
+
+// ─── Conversation State ────────────────────────────────────────────────────
+let state = 'greeting'; // greeting → collecting → responding
+
+// ─── AI Response Engine ────────────────────────────────────────────────────
+const CASES = [
+  {
+    keywords: ['fever','জ্বর','temperature','high temp','hot','shiver','chills','headache with fever'],
+    issue: 'Possible viral infection or seasonal fever — very common in Dhaka, especially during monsoon.',
+    specialist: 'General Physician (GP)',
+    urgency: 'medium',
+    urgencyLabel: '🟡 Medium — Visit within 24–48 hours',
+    where: '🏥 Nearest Clinic or Diagnostic Center',
+    cost: 'Low',
+    risk: 'Untreated fever can develop into dengue or typhoid complications in Dhaka's environment.',
+    advice: [
+      'Drink plenty of water or ORS (oral saline) — available at any pharmacy',
+      'Take Paracetamol (e.g., Napa) and rest; avoid cold drinks',
+      'If fever crosses 103°F or lasts more than 3 days, go to a clinic immediately'
+    ],
+    dhaka: 'Fever is extremely common in Dhaka due to air quality and seasonal changes. A quick visit to a local GP clinic is your best first step — costs around ৳200–৳500.'
+  },
+  {
+    keywords: ['chest pain','chest ache','heart','pressure in chest','tightness','shortness of breath','breathing difficulty','can\'t breathe','breathing problem'],
+    issue: 'Possible cardiac or respiratory emergency — this needs immediate attention.',
+    specialist: '🚨 Emergency Cardiologist / ER Doctor',
+    urgency: 'high',
+    urgencyLabel: '🔴 High — Seek IMMEDIATE emergency care NOW',
+    where: '🚨 Emergency Room (Dhaka Medical, Square Hospital, or Ibn Sina)',
+    cost: 'High',
+    risk: 'Chest pain with breathing difficulty can indicate a heart attack — every minute matters.',
+    advice: [
+      'Call emergency or have someone drive you to the nearest ER immediately',
+      'Do NOT eat, drink, or take any medication without a doctor\'s instruction',
+      'Stay calm, sit upright, and loosen tight clothing'
+    ],
+    dhaka: 'Dhaka hospitals like Square Hospital, United Hospital, or Dhaka Medical have 24/7 emergency cardiac units. Do not wait — go now.'
+  },
+  {
+    keywords: ['stomach','diarrhea','vomiting','nausea','loose stool','loose motion','abdominal','belly pain','stomach pain','gas','bloating','acidity'],
+    issue: 'Possible gastrointestinal upset, food poisoning, or gastritis — common in Dhaka due to street food and water quality.',
+    specialist: 'General Physician or Gastroenterologist',
+    urgency: 'low',
+    urgencyLabel: '🟢 Low — Can wait, but monitor closely',
+    where: '💊 Pharmacy first, then Clinic if no improvement',
+    cost: 'Low',
+    risk: 'Dehydration from vomiting or diarrhea can become dangerous for children and elderly people.',
+    advice: [
+      'Start ORS (oral saline) immediately — every pharmacy in Dhaka has it for ৳10–15',
+      'Avoid spicy, oily food; stick to khichuri, toast, or plain rice',
+      'If symptoms continue beyond 2 days or blood appears, visit a clinic right away'
+    ],
+    dhaka: 'GI issues are very common in Dhaka. Most cases resolve with ORS and rest. A local pharmacy visit (৳50–200) is usually enough before needing a doctor.'
+  },
+  {
+    keywords: ['rash','skin','itch','itching','allergy','hives','swelling','redness','red spot'],
+    issue: 'Possible allergic reaction, skin infection, or heat rash — common in Dhaka's humid climate.',
+    specialist: 'Dermatologist or General Physician',
+    urgency: 'low',
+    urgencyLabel: '🟢 Low — Monitor for 24 hours',
+    where: '💊 Pharmacy or Skin Clinic',
+    cost: 'Low',
+    risk: 'Severe allergic reactions can lead to anaphylaxis — if face swells or breathing is affected, go to ER immediately.',
+    advice: [
+      'Avoid scratching; apply calamine lotion (available at any pharmacy)',
+      'Take an antihistamine like Cetirizine if itching is severe',
+      'Identify and avoid the trigger — new soap, food, or fabric'
+    ],
+    dhaka: 'Skin rashes are very common in Dhaka during summer due to heat and humidity. A dermatologist consultation starts at around ৳300–৳500 at local clinics.'
+  },
+  {
+    keywords: ['headache','migraine','head pain','head ache'],
+    issue: 'Possible tension headache or migraine — often triggered by stress, dehydration, or Dhaka's noise and heat.',
+    specialist: 'General Physician (for frequent cases, Neurologist)',
+    urgency: 'low',
+    urgencyLabel: '🟢 Low — Rest and monitor',
+    where: '💊 Pharmacy or GP Clinic',
+    cost: 'Low',
+    risk: 'A sudden, extremely severe "thunderclap" headache could indicate a serious brain condition — go to ER if that happens.',
+    advice: [
+      'Drink water, rest in a quiet dark room, and take Paracetamol or Ibuprofen',
+      'Limit screen time and avoid bright sunlight',
+      'If headaches occur more than 3 times a week, book a GP appointment'
+    ],
+    dhaka: 'Tension headaches are very frequent in Dhaka due to traffic noise and stress. A pharmacy visit for Paracetamol (৳5–৳20) is usually the first step.'
+  },
+  {
+    keywords: ['cough','cold','flu','runny nose','sore throat','congestion','sneeze','sneezing'],
+    issue: 'Possible upper respiratory infection or common cold — extremely frequent in Dhaka especially in winter and monsoon.',
+    specialist: 'General Physician',
+    urgency: 'low',
+    urgencyLabel: '🟢 Low — Rest at home, visit clinic if worsening',
+    where: '💊 Pharmacy',
+    cost: 'Low',
+    risk: 'Untreated respiratory infections can progress to bronchitis or pneumonia, especially in children and elderly.',
+    advice: [
+      'Drink warm water with honey and ginger — very effective for sore throat',
+      'Use an antihistamine or decongestant nasal spray from the pharmacy',
+      'If cough persists beyond 7 days or you develop fever, visit a GP'
+    ],
+    dhaka: 'Air pollution in Dhaka makes respiratory symptoms worse. Keep a mask handy outdoors and rest at home for mild symptoms.'
+  },
+  {
+    keywords: ['cut','bleeding','wound','injury','accident','fracture','broken','fall','blood'],
+    issue: 'Possible physical injury — severity depends on bleeding and pain level.',
+    specialist: 'General Surgeon or Orthopedic Doctor',
+    urgency: 'medium',
+    urgencyLabel: '🟡 Medium — Visit clinic or hospital soon',
+    where: '🏥 Nearest Clinic (minor) or Hospital Emergency (severe)',
+    cost: 'Medium',
+    risk: 'Uncontrolled bleeding or untreated fractures can lead to infection or permanent damage.',
+    advice: [
+      'Apply firm pressure with a clean cloth to stop bleeding',
+      'For cuts: clean with clean water and antiseptic, then bandage',
+      'If bone looks broken or bleeding won't stop in 10 minutes — go to ER immediately'
+    ],
+    dhaka: 'For minor cuts and injuries, local clinics handle dressings and first aid for around ৳100–৳300. Larger injuries should go to Dhaka Medical or a nearby hospital.'
+  },
+  {
+    keywords: ['diabete','sugar','blood sugar','insulin','glucose','diabetes'],
+    issue: 'Possible blood sugar imbalance — needs monitoring and specialist review.',
+    specialist: 'Endocrinologist or General Physician',
+    urgency: 'medium',
+    urgencyLabel: '🟡 Medium — Get checked within 48 hours',
+    where: '🏥 Diagnostic Center for blood test, then doctor',
+    cost: 'Medium',
+    risk: 'Unmanaged blood sugar causes serious damage to kidneys, eyes, and nerves over time.',
+    advice: [
+      'Do a fasting blood glucose test at any nearby diagnostic lab (৳150–৳300)',
+      'Reduce sugar, white rice, and processed food from your diet immediately',
+      'Keep a record of symptoms and share with your doctor'
+    ],
+    dhaka: 'Diabetes is increasingly common in Dhaka. Many diagnostic labs offer affordable HbA1c and blood glucose tests. Early management prevents serious complications.'
+  }
+];
+
+function detectCase(input) {
+  const lower = input.toLowerCase();
+  for (const c of CASES) {
+    if (c.keywords.some(k => lower.includes(k))) return c;
+  }
+  return null;
+}
+
+function buildGenericResponse(input) {
+  return {
+    issue: 'Symptoms noted. This appears to be a general health concern that needs professional evaluation.',
+    specialist: 'General Physician (GP) — best first point of contact',
+    urgency: 'medium',
+    urgencyLabel: '🟡 Medium — Visit a clinic within 24–48 hours',
+    where: '🏥 Nearest GP Clinic or Community Health Center',
+    cost: 'Low',
+    risk: 'Ignoring unexplained symptoms may allow an underlying condition to worsen undetected.',
+    advice: [
+      'Visit a local GP clinic — they can perform an initial examination and order the right tests',
+      'Keep a note of when symptoms started, their intensity, and any changes',
+      'Avoid self-medicating with antibiotics without a doctor\'s prescription'
+    ],
+    dhaka: 'A GP consultation in most Dhaka clinics costs between ৳200–৳600 and is the safest first step for any unfamiliar symptom.'
+  };
+}
+
+// ─── Render Functions ──────────────────────────────────────────────────────
+function addBubble(type, html, isHtml = false) {
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = `bubble-row ${type === 'user' ? 'user' : ''}`;
+
+  const avatarClass = type === 'user' ? 'user-av' : 'disha';
+  const avatarEmoji = type === 'user' ? '👤' : '🏥';
+  const bubbleClass = type === 'user' ? 'user-bubble' : 'disha-bubble';
+
+  row.innerHTML = `
+    <div class="avatar ${avatarClass}">${avatarEmoji}</div>
+    <div>
+      <div class="bubble ${bubbleClass}">${isHtml ? html : escHtml(html)}</div>
+      <div class="bubble-time">${now()}</div>
+    </div>
+  `;
+  area.appendChild(row);
+  scrollBottom();
+  return row;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addThinking() {
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = 'bubble-row';
+  row.id = 'thinking-row';
+  row.innerHTML = `
+    <div class="avatar disha">🏥</div>
+    <div>
+      <div class="bubble disha-bubble">
+        <div class="thinking">
+          <span>Disha is thinking</span>
+          <div class="dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  area.appendChild(row);
+  scrollBottom();
+}
+
+function removeThinking() {
+  const el = document.getElementById('thinking-row');
+  if (el) el.remove();
+}
+
+function addChips(options) {
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = 'chips-row';
+  row.id = 'chips-row';
+  options.forEach(opt => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.textContent = opt;
+    chip.onclick = () => {
+      document.getElementById('user-input').value = opt;
+      document.getElementById('chips-row')?.remove();
+      sendMessage();
+    };
+    row.appendChild(chip);
+  });
+  area.appendChild(row);
+  scrollBottom();
+}
+
+function removeChips() {
+  document.getElementById('chips-row')?.remove();
+}
+
+function renderResultCard(c) {
+  const urgencyClass = c.urgency === 'high' ? 'high' : c.urgency === 'medium' ? 'medium' : 'low';
+  const costIcon = c.cost === 'High' ? '৳৳৳' : c.cost === 'Medium' ? '৳৳' : '৳';
+
+  const adviceHtml = c.advice.map(a => `<li>${escHtml(a)}</li>`).join('');
+
+  return `
+    <div class="result-card">
+      <div class="card-header">
+        🩺 Disha's Healthcare Guidance
+      </div>
+      <div class="card-body">
+        <div class="card-row">
+          <span class="card-label">🔍 Possible Issue</span>
+          <span class="card-value">${escHtml(c.issue)}</span>
+        </div>
+
+        <div class="card-divider"></div>
+
+        <div class="card-row">
+          <span class="card-label">👨‍⚕️ Recommended Specialist</span>
+          <span class="card-value">${escHtml(c.specialist)}</span>
+        </div>
+
+        <div class="card-row">
+          <span class="card-label">⚡ Urgency Level</span>
+          <span class="urgency-badge ${urgencyClass}">${escHtml(c.urgencyLabel)}</span>
+        </div>
+
+        <div class="card-row">
+          <span class="card-label">📍 Where to Go</span>
+          <span class="where-tag">${escHtml(c.where)}</span>
+        </div>
+
+        <div class="card-row">
+          <span class="card-label">💰 Cost Level</span>
+          <span class="cost-badge">${costIcon} ${escHtml(c.cost)}</span>
+        </div>
+
+        <div class="card-divider"></div>
+
+        <div class="card-row">
+          <span class="card-label">⚠️ Risk if Ignored</span>
+          <div class="risk-box">${escHtml(c.risk)}</div>
+        </div>
+
+        <div class="card-row">
+          <span class="card-label">✅ Advice</span>
+          <ul class="advice-list">${adviceHtml}</ul>
+        </div>
+
+        <div class="dhaka-note">
+          <span>📌</span>
+          <span>${escHtml(c.dhaka)}</span>
+        </div>
+
+        <button class="try-another-btn" onclick="tryAnother()">↺ Try Another Case</button>
+      </div>
+    </div>
+  `;
+}
+
+// ─── Try Another ───────────────────────────────────────────────────────────
+function tryAnother() {
+  const area = document.getElementById('chat-area');
+  area.innerHTML = '';
+  state = 'collecting';
+  greetAgain();
+}
+
+// ─── Flow Control ──────────────────────────────────────────────────────────
+function greetAgain() {
+  addBubble('disha', `Great! Let's look at a new case. Please tell me:
+
+• <strong>Symptoms</strong> — What are you feeling? (e.g., fever, stomach pain, rash)
+• <strong>Age</strong> — How old is the patient?
+• <strong>Duration</strong> — How long have the symptoms been present?
+
+You can type everything in one message!`, true);
+
+  addChips([
+    '🌡️ Fever + Headache, 28yrs, 2 days',
+    '🤢 Stomach pain + Vomiting, 35yrs, 1 day',
+    '😮‍💨 Chest pain, 50yrs, 30 min',
+    '🤧 Cough + Runny nose, 22yrs, 5 days',
+  ]);
+}
+
+function handleUserInput(text) {
+  removeChips();
+  addBubble('user', text);
+
+  if (state === 'greeting' || state === 'collecting') {
+    state = 'responding';
+    setInputDisabled(true);
+    addThinking();
+
+    setTimeout(() => {
+      removeThinking();
+      const matched = detectCase(text) || buildGenericResponse(text);
+      const cardHtml = renderResultCard(matched);
+
+      // Intro message
+      addBubble('disha', `I've analyzed what you shared. Here's my guidance based on typical healthcare conditions in Dhaka:`, false);
+
+      // Card
+      const area = document.getElementById('chat-area');
+      const row = document.createElement('div');
+      row.className = 'bubble-row';
+      row.style.animation = 'fadeSlide 0.35s ease both';
+      row.innerHTML = `
+        <div class="avatar disha">🏥</div>
+        <div style="flex:1; max-width: calc(100% - 42px);">
+          ${cardHtml}
+          <div class="bubble-time">${now()}</div>
+        </div>
+      `;
+      area.appendChild(row);
+      scrollBottom();
+
+      // Safety note after card
+      setTimeout(() => {
+        addBubble('disha', `⚠️ <em>Remember: Disha provides guidance, not medical diagnosis. Please consult a qualified doctor for proper treatment.</em>`, true);
+        state = 'done';
+        setInputDisabled(false);
+      }, 600);
+
+    }, 2200 + Math.random() * 800);
+  } else {
+    // After response — friendly follow-up
+    addThinking();
+    setTimeout(() => {
+      removeThinking();
+      addBubble('disha', `You can use the <strong>↺ Try Another Case</strong> button above to start fresh, or type new symptoms and I'll guide you again!`, true);
+      state = 'collecting';
+      setInputDisabled(false);
+    }, 1000);
+  }
+}
+
+function setInputDisabled(val) {
+  document.getElementById('user-input').disabled = val;
+  document.getElementById('send-btn').disabled = val;
+}
+
+// ─── Initial Greeting ──────────────────────────────────────────────────────
+function init() {
+  setTimeout(() => {
+    addBubble('disha', `Assalamualaikum! 👋 আমি <strong>Disha</strong> — your personal healthcare navigation guide for Dhaka.`, true);
+  }, 400);
+
+  setTimeout(() => {
+    addBubble('disha', `I'm here to help you find the <strong>right care, at the right time</strong> — without confusing medical jargon or unnecessary hospital trips.
+
+I understand the realities of Dhaka: traffic, costs, and overcrowded hospitals. My job is to give you simple, clear, and actionable guidance. 🏥`, true);
+  }, 1200);
+
+  setTimeout(() => {
+    addBubble('disha', `To get started, please share:
+
+• <strong>Symptoms</strong> — What are you or your family member experiencing?
+• <strong>Age</strong> — How old is the patient?
+• <strong>Duration</strong> — How long have the symptoms been present?
+
+You can type everything in one message below! 👇`, true);
+    state = 'collecting';
+
+    addChips([
+      '🌡️ Fever + Headache, 28yrs, 2 days',
+      '🤢 Stomach pain + Vomiting, 35yrs, 1 day',
+      '😮‍💨 Chest pain, 50yrs, 30 min',
+      '🤧 Cough + Runny nose, 22yrs, 5 days',
+      '🩹 Skin rash + Itching, 19yrs, 3 days'
+    ]);
+  }, 2200);
+}
+
+// ─── Send Logic ────────────────────────────────────────────────────────────
+function sendMessage() {
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  autoResize(input);
+  handleUserInput(text);
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+// ─── Event Wiring ──────────────────────────────────────────────────────────
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById('user-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+document.getElementById('user-input').addEventListener('input', function() {
+  autoResize(this);
+});
+
+// ─── Boot ──────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
