@@ -5,71 +5,62 @@ class TriageEngine:
         pass
 
     def determine_urgency(self, parsed_symptoms: list[str]) -> dict:
-        """
-        Takes a list of structured symptoms and returns the urgency level determination.
-        """
         if not parsed_symptoms:
             return {"level": "Home Care", "color": "🟢", "description": "No symptoms provided. Rest and monitor your condition."}
             
-        symptoms_set = set(parsed_symptoms)
+        s = set(parsed_symptoms)
         
-        # 1. Check for Emergency scenarios first (Highest Priority)
-        # Conditions: unconscious, or combination of severe symptoms
-        emergency_conditions = [
-            "unconscious",
-            {"chest_pain", "shortness_of_breath"},
-            {"shortness_of_breath", "chest_tightness"},
-            {"bleeding", "weakness"}
-        ]
+        # 1. EMERGENCY (Demo Scope: Cardiac/Pregnancy Only)
+        is_cardiac = (("chest_pain" in s or "chest_tightness" in s) and "shortness_of_breath" in s)
+        is_pregnancy = ("pregnancy" in s)
         
-        if self._check_conditions(symptoms_set, emergency_conditions):
+        if is_cardiac or is_pregnancy:
             return {
                 "level": "Emergency", 
                 "color": "🔴", 
-                "description": "Immediate life-threatening condition. Seek emergency medical care immediately."
+                "description": "High-risk condition detected (Cardiac/Obstetric). Immediate medical attention is vital."
             }
             
-        # 2. Check for Urgent scenarios
-        # Conditions: significant but not immediately life-limiting unless it worsens
-        urgent_conditions = [
-            "chest_pain",
-            "shortness_of_breath",
-            "bleeding",
-            "burn",
-            "chest_tightness",
-            {"vomiting", "fever"},
-            {"child", "fever"},   # child with fever is clinically Urgent
-            "cut"
-        ]
+        # 2. URGENT
+        # significant issues that aren't the specific demo cardiac/pregnancy triggers
+        is_urgent = (
+            "unconscious" in s or 
+            "bleeding" in s or 
+            "chest_pain" in s or 
+            "shortness_of_breath" in s or 
+            "chest_tightness" in s or 
+            "burn" in s or 
+            "cut" in s or
+            ("fever" in s and ("vomiting" in s or "child" in s or "rash" in s)) or
+            ("vomiting" in s and "weakness" in s)
+        )
         
-        if self._check_conditions(symptoms_set, urgent_conditions):
+        if is_urgent:
             return {
                 "level": "Urgent", 
                 "color": "🟠", 
                 "description": "Needs medical attention soon. Visit a clinic or urgent care."
             }
 
-        # 3. Check for Routine scenarios
-        # Conditions: stable issues that require a doctor's visit
-        routine_conditions = [
-            "stomach_pain",
-            "back_pain",
-            "leg_pain",
-            "blurry_vision",
-            "dizziness",
-            "pregnancy",
-            "child"
-        ]
+        # 3. ROUTINE
+        is_routine = (
+            "stomach_pain" in s or 
+            "back_pain" in s or 
+            "leg_pain" in s or 
+            "blurry_vision" in s or 
+            "dizziness" in s or 
+            "child" in s or 
+            "severe_pain" in s
+        )
         
-        if self._check_conditions(symptoms_set, routine_conditions):
+        if is_routine:
             return {
                 "level": "Routine", 
                 "color": "🔵", 
                 "description": "Stable condition. Schedule an appointment with a doctor within a few days."
             }
             
-        # 4. Default to Home Care if it's minor symptoms
-        # Conditions: cold, cough, fever, headache, rash, sweating, weakness
+        # 4. DEFAULT
         return {
             "level": "Home Care", 
             "color": "🟢", 

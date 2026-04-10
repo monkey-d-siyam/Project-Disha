@@ -3,121 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disha AI | Intelligent Triage</title>
-    <!-- Use Google Fonts -->
+    <title>Disha AI — Healthcare Navigation</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Main Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Phosphor Icons for UI polish -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Modern Glassmorphism Card -->
-        <main class="triage-card">
-            
-            <header class="card-header">
-                <div class="logo-wrapper">
-                    <i class="ph-fill ph-heartbeat heartbeat-icon"></i>
-                </div>
-                <h1>Disha AI</h1>
-                <p>Describe your condition. We'll guide you instantly.</p>
-            </header>
+    <div class="ticker">
+        <div class="ticker-content">🏥 Urban Health Node: Active • April 2026 Outbreak Alert: Dengue & Measles Monitoring Engaged • Emergency Golden Hour Routing: Operational</div>
+    </div>
 
-            <form id="triage-form" class="triage-form">
-                
-                <!-- Symptoms Field (Primary) -->
-                <div class="form-group symptoms-group">
+    <div class="app-container">
+        <header class="main-header">
+            <div class="brand">
+                <div class="brand-icon">🏥</div>
+                <div>
+                    <h1>Disha — দিশা</h1>
+                    <p style="font-family: 'Hind Siliguri', sans-serif;">সঠিক সময়ে সঠিক চিকিৎসার দিশারী</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <!-- AI Welcome Message -->
+            <div class="chat-bubble-row">
+                <div class="avatar avatar-ai">🏥</div>
+                <div class="bubble">
+                    <strong>Assalamualaikum!</strong> I am <strong>Disha</strong>, your AI healthcare navigator.<br>
+                    <strong>আসসালামু আলাইকুম!</strong> আমি <strong>দিশা</strong>, আপনার এআই স্বাস্থ্যসেবা প্রদর্শক।
+                    <br><br>
+                    Please describe your condition below. I will guide you to the right department and the nearest specialized hospital in Dhaka.<br>
+                    আপনার সমস্যাটি নিচে বর্ণনা করুন। আমি আপনাকে সঠিক বিভাগ এবং ঢাকার নিকটতম বিশেষায়িত হাসপাতালে নির্দেশ করব।
+                </div>
+            </div>
+
+            <!-- The Form Wrapped in a Message Card -->
+            <form id="triage-form" class="triage-form-card">
+                <div class="form-group">
                     <label for="symptoms" class="form-label">
-                        <i class="ph ph-stethoscope"></i> Symptoms
+                        <i class="ph-bold ph-stethoscope"></i> Describe Symptoms — আপনার উপসর্গ বর্ণনা করুন
                     </label>
                     <textarea 
                         id="symptoms" 
                         name="symptoms" 
-                        class="form-control textarea" 
-                        placeholder="E.g., Severe chest pain, shortness of breath..." 
-                        rows="4"
+                        class="form-control" 
+                        placeholder="E.g., Severe chest pain since morning / সকাল থেকে তীব্র বুকে ব্যথা" 
                         required></textarea>
-                    <span class="form-help">Please describe your symptoms in English or Bangla.</span>
                 </div>
 
                 <div class="form-row">
-                    <!-- Age Field -->
-                    <div class="form-group age-group">
+                    <div class="form-group">
                         <label for="age" class="form-label">
-                            <i class="ph ph-calendar"></i> Age
+                            <i class="ph-bold ph-calendar"></i> Age — বয়স
                         </label>
                         <input 
                             type="number" 
                             id="age" 
                             name="age" 
-                            class="form-control outline-input" 
+                            class="form-control" 
                             placeholder="e.g. 34" 
                             required>
                     </div>
 
-                    <!-- Gender Field -->
-                    <div class="form-group gender-group">
+                    <div class="form-group">
                         <label for="gender" class="form-label">
-                            <i class="ph ph-users"></i> Gender
+                            <i class="ph-bold ph-users"></i> Gender — লিঙ্গ
                         </label>
                         <div class="select-wrapper">
-                            <select id="gender" name="gender" class="form-control outline-input" required>
-                                <option value="" disabled selected>Select</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
+                            <select id="gender" name="gender" class="form-control" required>
+                                <option value="" disabled selected>Select / নির্বাচন করুন</option>
+                                <option value="male">Male / পুরুষ</option>
+                                <option value="female">Female / মহিলা</option>
+                                <option value="other">Other / অন্যান্য</option>
                             </select>
-                            <i class="ph ph-caret-down select-caret"></i>
+                            <i class="ph-fill ph-caret-down select-caret"></i>
                         </div>
                     </div>
                 </div>
 
-                <!-- Location Field -->
-                <div class="form-group location-group">
+                <div class="form-group">
                     <label for="location" class="form-label">
-                        <i class="ph ph-map-pin"></i> Location
+                        <i class="ph-bold ph-map-pin"></i> Your Location — আপনার অবস্থান
                     </label>
-                    <div class="input-with-icon">
-                        <input 
-                            type="text" 
-                            id="location" 
-                            name="location" 
-                            class="form-control outline-input" 
-                            placeholder="Current city or area" 
-                            required>
-                        <button type="button" class="btn-icon" aria-label="Use current location" title="Locate me">
-                            <i class="ph-bold ph-crosshair"></i>
-                        </button>
-                    </div>
+                    <input 
+                        type="text" 
+                        id="location" 
+                        name="location" 
+                        class="form-control" 
+                        placeholder="Current area in Dhaka (e.g., Banani, Dhanmondi)" 
+                        required>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="form-actions">
                     <button type="submit" id="submit-btn" class="btn btn-primary">
-                        <span>Get Triage Guidance</span>
+                        <span>Get Triage Guidance — নির্দেশনা পান</span>
                         <i class="ph-bold ph-arrow-right"></i>
                     </button>
                 </div>
                 
-                <!-- Response status display -->
-                <div id="status-message" class="status-message hidden"></div>
+                <div id="status-message" class="status-message"></div>
             </form>
             
-        </main>
-
-        <footer style="margin-top: 1.5rem; text-align: center; padding: 0 1rem 1.5rem;">
-            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.35); line-height: 1.6; max-width: 480px; margin: 0 auto;">
-                <i class="ph ph-shield-check" style="color: rgba(255,255,255,0.4);"></i>
-                <strong style="color: rgba(255,255,255,0.45);">Medical Disclaimer:</strong>
-                Disha AI is a decision-support tool only. It does not replace professional medical diagnosis.
-                In life-threatening emergencies, call <strong style="color: rgba(255,255,255,0.55);">999</strong>.
+            <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 10px; line-height: 1.4;">
+                Disha is an AI Decision-Support tool, not a doctor. In life-threatening emergencies, call <strong>999</strong>.<br>
+                দিশা একটি এআই সিদ্ধান্ত-সহায়তা সরঞ্জাম মাত্র। জীবন-ঘাতী জরুরি অবস্থায় এখনই <strong>৯৯৯</strong> কল করুন।
             </p>
-            <p style="font-size: 0.7rem; color: rgba(255,255,255,0.2); margin-top: 0.5rem;">Disha AI v1.0 &nbsp;|&nbsp; Sprint 10 Complete</p>
-        </footer>
-
+        </main>
     </div>
 
     <script>
@@ -127,9 +122,10 @@
             const statusMessage = document.getElementById('status-message');
             
             // UI state: loading
-            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<span class="loading-dots">Initializing Triage Node</span>';
             submitBtn.disabled = true;
-            statusMessage.className = 'status-message hidden';
+            statusMessage.className = 'status-message';
+            statusMessage.style.display = 'none';
             
             const payload = {
                 symptoms: document.getElementById('symptoms').value,
@@ -153,19 +149,23 @@
                     } else {
                         statusMessage.textContent = result.message;
                         statusMessage.className = 'status-message success';
+                        statusMessage.style.display = 'block';
                         document.getElementById('triage-form').reset();
                     }
                 } else {
                     statusMessage.textContent = result.message || 'An error occurred';
                     statusMessage.className = 'status-message error';
+                    statusMessage.style.display = 'block';
                 }
             } catch (error) {
-                statusMessage.textContent = 'Failed to connect to the server.';
+                statusMessage.textContent = 'Failed to connect to the Disha Engine.';
                 statusMessage.className = 'status-message error';
+                statusMessage.style.display = 'block';
             } finally {
-                // UI state: reset
-                submitBtn.classList.remove('loading');
-                submitBtn.disabled = false;
+                if (!window.location.href.includes('questions')) {
+                    submitBtn.innerHTML = '<span>Get Triage Guidance</span> <i class="ph-bold ph-arrow-right"></i>';
+                    submitBtn.disabled = false;
+                }
             }
         });
     </script>

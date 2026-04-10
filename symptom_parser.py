@@ -6,7 +6,7 @@ class SymptomParser:
         # Dictionary mapping keywords/phrases to structured symptoms
         self.symptom_map = {
             "chest_pain": ["buk betha", "buke batha", "bukebatha", "chest pain", "pain in chest"],
-            "shortness_of_breath": ["shash nite koshto", "shash kosto", "shashkosto", "shortness of breath", "breathing issue", "nisash nite kosto", "kosto hocche shash nite", "breathing difficulty", "shwas nite parchhi na", "shwas nite", "shwas", "nisash", "cant breathe", "can t breathe", "breathe"],
+            "shortness_of_breath": ["shash nite koshto", "shash kosto", "shashkosto", "shortness of breath", "breathing issue", "nisash nite kosto", "kosto hocche shash nite", "breathing difficulty", "shwas nite parchhi na", "shwas nite koshto", "nisash", "cant breathe", "can t breathe"],
             "fever": ["jor", "jwor", "fever", "tapmatra", "high temperature", "temperature"],
             "headache": ["matha betha", "matha batha", "matha byatha", "headache", "mathabatha", "head ache"],
             "stomach_pain": ["pet betha", "pet batha", "petebatha", "stomach pain", "stomach ache", "belly ache"],
