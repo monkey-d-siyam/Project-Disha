@@ -363,6 +363,54 @@
       opacity: 0.6;
     }
 
+    /* ─── Risk Level Banner ──────────────────────────────────── */
+    .risk-level-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+    }
+    .risk-level-banner.low    { background: var(--green-bg); }
+    .risk-level-banner.medium { background: var(--yellow-bg); }
+    .risk-level-banner.high   { background: var(--red-bg); }
+
+    .risk-level-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+    }
+    .risk-level-value {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+    .risk-level-banner.low    .risk-level-value { color: var(--green); }
+    .risk-level-banner.medium .risk-level-value { color: #b38600; }
+    .risk-level-banner.high   .risk-level-value { color: var(--red); }
+
+    /* ─── Safety Notice ──────────────────────────────────────── */
+    .safety-notice {
+      background: #fff8e7;
+      border-bottom: 1px solid #f0d98a;
+      padding: 8px 18px;
+      font-size: 0.72rem;
+      color: #7a5f00;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    /* ─── Card Label override for headings ───────────────────── */
+    .card-label[class] {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+    }
+
     .try-another-btn {
       display: inline-flex;
       align-items: center;
@@ -547,131 +595,139 @@ let state = 'greeting'; // greeting → collecting → responding
 const CASES = [
   {
     keywords: ['fever','জ্বর','temperature','high temp','hot','shiver','chills','headache with fever'],
-    issue: 'Possible viral infection or seasonal fever — very common in Dhaka, especially during monsoon.',
+    riskLevel: 'Medium',
+    issue: 'This may be a viral infection or seasonal fever — very common in Dhaka, especially during monsoon season. This is not a diagnosis.',
     specialist: 'General Physician (GP)',
     urgency: 'medium',
     urgencyLabel: '🟡 Medium — Visit within 24–48 hours',
-    where: '🏥 Nearest Clinic or Diagnostic Center',
+    where: '🏥 Nearest GP Clinic or Diagnostic Center',
     cost: 'Low',
-    risk: 'Untreated fever can develop into dengue or typhoid complications in Dhaka's environment.',
+    risk: "Untreated fever that goes on for days can worsen and lead to serious complications in Dhaka's environment.",
     advice: [
-      'Drink plenty of water or ORS (oral saline) — available at any pharmacy',
-      'Take Paracetamol (e.g., Napa) and rest; avoid cold drinks',
-      'If fever crosses 103°F or lasts more than 3 days, go to a clinic immediately'
+      'Rest at home and drink plenty of fluids — water, coconut water, or light soup',
+      'Use a cool, damp cloth on the forehead to help bring temperature down',
+      'If the fever lasts more than 3 days or feels severe, visit a GP clinic right away'
     ],
-    dhaka: 'Fever is extremely common in Dhaka due to air quality and seasonal changes. A quick visit to a local GP clinic is your best first step — costs around ৳200–৳500.'
+    dhaka: 'Fever is very common in Dhaka due to seasonal changes. A GP clinic visit is your safest first step — a doctor will assess and guide you properly.'
   },
   {
-    keywords: ['chest pain','chest ache','heart','pressure in chest','tightness','shortness of breath','breathing difficulty','can\'t breathe','breathing problem'],
-    issue: 'Possible cardiac or respiratory emergency — this needs immediate attention.',
-    specialist: '🚨 Emergency Cardiologist / ER Doctor',
+    keywords: ['chest pain','chest ache','heart','pressure in chest','tightness','shortness of breath','breathing difficulty',"can't breathe",'breathing problem','unconscious','fainted','severe bleeding'],
+    riskLevel: 'High',
+    issue: 'These symptoms may indicate a serious cardiac or respiratory emergency. This requires immediate professional evaluation — do not wait.',
+    specialist: 'Emergency Doctor (ER)',
     urgency: 'high',
     urgencyLabel: '🔴 High — Seek IMMEDIATE emergency care NOW',
-    where: '🚨 Emergency Room (Dhaka Medical, Square Hospital, or Ibn Sina)',
+    where: '🚨 Nearest Emergency Room — Dhaka Medical, Square Hospital, or Ibn Sina',
     cost: 'High',
-    risk: 'Chest pain with breathing difficulty can indicate a heart attack — every minute matters.',
+    risk: 'Delaying care for chest pain or breathing difficulty can be life-threatening — every minute matters.',
     advice: [
-      'Call emergency or have someone drive you to the nearest ER immediately',
-      'Do NOT eat, drink, or take any medication without a doctor\'s instruction',
-      'Stay calm, sit upright, and loosen tight clothing'
+      'Go to the nearest emergency room immediately — do not drive alone',
+      'Stay calm, sit upright, and loosen any tight clothing around the chest',
+      'Do not eat, drink, or take any substance until a doctor has seen you'
     ],
-    dhaka: 'Dhaka hospitals like Square Hospital, United Hospital, or Dhaka Medical have 24/7 emergency cardiac units. Do not wait — go now.'
+    dhaka: 'Dhaka hospitals like Square, United, and Dhaka Medical have 24/7 emergency units. Do not wait — go now and let the doctors assess you.'
   },
   {
     keywords: ['stomach','diarrhea','vomiting','nausea','loose stool','loose motion','abdominal','belly pain','stomach pain','gas','bloating','acidity'],
-    issue: 'Possible gastrointestinal upset, food poisoning, or gastritis — common in Dhaka due to street food and water quality.',
+    riskLevel: 'Low',
+    issue: 'This could be a stomach upset, mild food-related issue, or digestive discomfort — very common in Dhaka. This is not a diagnosis.',
     specialist: 'General Physician or Gastroenterologist',
     urgency: 'low',
-    urgencyLabel: '🟢 Low — Can wait, but monitor closely',
-    where: '💊 Pharmacy first, then Clinic if no improvement',
+    urgencyLabel: '🟢 Low — Monitor closely, visit clinic if no improvement',
+    where: '💊 Pharmacy for ORS, then a Clinic if symptoms persist',
     cost: 'Low',
-    risk: 'Dehydration from vomiting or diarrhea can become dangerous for children and elderly people.',
+    risk: 'Ongoing vomiting or diarrhea without fluids can lead to dehydration — especially risky for children and elderly.',
     advice: [
-      'Start ORS (oral saline) immediately — every pharmacy in Dhaka has it for ৳10–15',
-      'Avoid spicy, oily food; stick to khichuri, toast, or plain rice',
-      'If symptoms continue beyond 2 days or blood appears, visit a clinic right away'
+      'Drink oral saline (ORS) regularly — available at every pharmacy in Dhaka',
+      'Eat light, plain food like khichuri, toast, or plain rice; avoid spicy or oily meals',
+      'If symptoms last more than 2 days or you notice blood, see a doctor promptly'
     ],
-    dhaka: 'GI issues are very common in Dhaka. Most cases resolve with ORS and rest. A local pharmacy visit (৳50–200) is usually enough before needing a doctor.'
+    dhaka: 'GI issues are very common in Dhaka. ORS is your first line of support. A GP clinic visit is the right next step if things do not improve.'
   },
   {
     keywords: ['rash','skin','itch','itching','allergy','hives','swelling','redness','red spot'],
-    issue: 'Possible allergic reaction, skin infection, or heat rash — common in Dhaka's humid climate.',
+    riskLevel: 'Low',
+    issue: "This may be a skin reaction, irritation, or heat-related condition — common in Dhaka's humid climate. This is not a diagnosis.",
     specialist: 'Dermatologist or General Physician',
     urgency: 'low',
     urgencyLabel: '🟢 Low — Monitor for 24 hours',
-    where: '💊 Pharmacy or Skin Clinic',
+    where: '💊 Pharmacy or Skin & General Clinic',
     cost: 'Low',
-    risk: 'Severe allergic reactions can lead to anaphylaxis — if face swells or breathing is affected, go to ER immediately.',
+    risk: 'In rare cases, severe allergic reactions can escalate quickly — if face swells or breathing is affected, go to ER immediately.',
     advice: [
-      'Avoid scratching; apply calamine lotion (available at any pharmacy)',
-      'Take an antihistamine like Cetirizine if itching is severe',
-      'Identify and avoid the trigger — new soap, food, or fabric'
+      'Avoid touching or scratching the affected area to prevent further irritation',
+      'Try to identify if a new food, product, or fabric may have triggered the reaction',
+      'Visit a clinic or a pharmacist who can help guide you on suitable soothing options'
     ],
-    dhaka: 'Skin rashes are very common in Dhaka during summer due to heat and humidity. A dermatologist consultation starts at around ৳300–৳500 at local clinics.'
+    dhaka: 'Skin reactions are very common in Dhaka due to heat and humidity. A visit to a local clinic or dermatologist will help identify the cause safely.'
   },
   {
     keywords: ['headache','migraine','head pain','head ache'],
-    issue: 'Possible tension headache or migraine — often triggered by stress, dehydration, or Dhaka's noise and heat.',
-    specialist: 'General Physician (for frequent cases, Neurologist)',
+    riskLevel: 'Low',
+    issue: "This could be a tension headache or stress-related discomfort — very common in Dhaka's busy environment. This is not a diagnosis.",
+    specialist: 'General Physician (for recurring cases, a Neurologist)',
     urgency: 'low',
     urgencyLabel: '🟢 Low — Rest and monitor',
-    where: '💊 Pharmacy or GP Clinic',
+    where: '💊 GP Clinic if persistent',
     cost: 'Low',
-    risk: 'A sudden, extremely severe "thunderclap" headache could indicate a serious brain condition — go to ER if that happens.',
+    risk: 'A sudden, extremely severe headache that comes on quickly could be a serious warning sign — go to ER if that happens.',
     advice: [
-      'Drink water, rest in a quiet dark room, and take Paracetamol or Ibuprofen',
-      'Limit screen time and avoid bright sunlight',
-      'If headaches occur more than 3 times a week, book a GP appointment'
+      'Rest in a quiet, dark room and drink plenty of water',
+      'Avoid screens and bright light; try a cool compress on the forehead',
+      'If headaches are frequent or very severe, book an appointment with a GP'
     ],
-    dhaka: 'Tension headaches are very frequent in Dhaka due to traffic noise and stress. A pharmacy visit for Paracetamol (৳5–৳20) is usually the first step.'
+    dhaka: 'Headaches from stress and noise are very common in Dhaka. Rest and hydration often help. A GP visit is the right step for recurring pain.'
   },
   {
     keywords: ['cough','cold','flu','runny nose','sore throat','congestion','sneeze','sneezing'],
-    issue: 'Possible upper respiratory infection or common cold — extremely frequent in Dhaka especially in winter and monsoon.',
+    riskLevel: 'Low',
+    issue: 'This may be an upper respiratory infection or common cold — very frequent in Dhaka, especially during monsoon and winter. This is not a diagnosis.',
     specialist: 'General Physician',
     urgency: 'low',
-    urgencyLabel: '🟢 Low — Rest at home, visit clinic if worsening',
-    where: '💊 Pharmacy',
+    urgencyLabel: '🟢 Low — Rest at home; visit a clinic if worsening',
+    where: '💊 Pharmacy or GP Clinic if no improvement',
     cost: 'Low',
-    risk: 'Untreated respiratory infections can progress to bronchitis or pneumonia, especially in children and elderly.',
+    risk: 'Respiratory infections that go untreated can worsen and reach the lungs — especially in children and the elderly.',
     advice: [
-      'Drink warm water with honey and ginger — very effective for sore throat',
-      'Use an antihistamine or decongestant nasal spray from the pharmacy',
-      'If cough persists beyond 7 days or you develop fever, visit a GP'
+      'Drink warm fluids — honey and ginger in warm water can help soothe the throat',
+      'Wear a mask outdoors to avoid worsening symptoms due to Dhaka air pollution',
+      'If symptoms last more than 7 days or fever develops, visit a GP clinic'
     ],
-    dhaka: 'Air pollution in Dhaka makes respiratory symptoms worse. Keep a mask handy outdoors and rest at home for mild symptoms.'
+    dhaka: 'Respiratory symptoms are very common in Dhaka due to air quality. Rest and warm fluids are a good start — see a GP if things get worse.'
   },
   {
     keywords: ['cut','bleeding','wound','injury','accident','fracture','broken','fall','blood'],
-    issue: 'Possible physical injury — severity depends on bleeding and pain level.',
+    riskLevel: 'Medium',
+    issue: 'This appears to be a physical injury. Severity depends on the extent of the wound or pain — professional assessment is needed.',
     specialist: 'General Surgeon or Orthopedic Doctor',
     urgency: 'medium',
-    urgencyLabel: '🟡 Medium — Visit clinic or hospital soon',
-    where: '🏥 Nearest Clinic (minor) or Hospital Emergency (severe)',
+    urgencyLabel: '🟡 Medium — Visit a clinic or hospital soon',
+    where: '🏥 Nearest Clinic (minor) or Hospital Emergency (for serious injuries)',
     cost: 'Medium',
-    risk: 'Uncontrolled bleeding or untreated fractures can lead to infection or permanent damage.',
+    risk: 'Unattended wounds can get infected and fractures left untreated can lead to permanent damage.',
     advice: [
-      'Apply firm pressure with a clean cloth to stop bleeding',
-      'For cuts: clean with clean water and antiseptic, then bandage',
-      'If bone looks broken or bleeding won't stop in 10 minutes — go to ER immediately'
+      'Apply firm, gentle pressure with a clean cloth to control any bleeding',
+      'Keep the injured area still and elevated if possible',
+      'Go to a clinic or ER if bleeding is heavy, not stopping, or a bone may be involved'
     ],
-    dhaka: 'For minor cuts and injuries, local clinics handle dressings and first aid for around ৳100–৳300. Larger injuries should go to Dhaka Medical or a nearby hospital.'
+    dhaka: 'For minor injuries, local clinics in Dhaka provide first aid and dressing. For anything serious, head to Dhaka Medical or a nearby hospital emergency.'
   },
   {
     keywords: ['diabete','sugar','blood sugar','insulin','glucose','diabetes'],
-    issue: 'Possible blood sugar imbalance — needs monitoring and specialist review.',
+    riskLevel: 'Medium',
+    issue: 'This may relate to blood sugar levels — a condition that needs proper testing and professional monitoring. This is not a diagnosis.',
     specialist: 'Endocrinologist or General Physician',
     urgency: 'medium',
     urgencyLabel: '🟡 Medium — Get checked within 48 hours',
-    where: '🏥 Diagnostic Center for blood test, then doctor',
+    where: '🏥 Diagnostic Center for a blood test, then consult a doctor',
     cost: 'Medium',
-    risk: 'Unmanaged blood sugar causes serious damage to kidneys, eyes, and nerves over time.',
+    risk: 'Unmanaged blood sugar over time can silently damage the kidneys, eyes, and nerves.',
     advice: [
-      'Do a fasting blood glucose test at any nearby diagnostic lab (৳150–৳300)',
-      'Reduce sugar, white rice, and processed food from your diet immediately',
-      'Keep a record of symptoms and share with your doctor'
+      'Visit a diagnostic lab for a fasting blood glucose test — your doctor will interpret the results',
+      'Reduce sweetened drinks, processed snacks, and excess rice as a general precaution',
+      'Keep a record of symptoms (thirst, frequent urination, fatigue) to share with your doctor'
     ],
-    dhaka: 'Diabetes is increasingly common in Dhaka. Many diagnostic labs offer affordable HbA1c and blood glucose tests. Early management prevents serious complications.'
+    dhaka: 'Diabetes is growing in Dhaka. Affordable blood tests are available at most diagnostic labs. Early professional guidance makes a big difference.'
   }
 ];
 
@@ -685,19 +741,20 @@ function detectCase(input) {
 
 function buildGenericResponse(input) {
   return {
-    issue: 'Symptoms noted. This appears to be a general health concern that needs professional evaluation.',
-    specialist: 'General Physician (GP) — best first point of contact',
+    riskLevel: 'Medium',
+    issue: 'These symptoms are not immediately clear without a proper examination. A healthcare professional needs to assess you in person.',
+    specialist: 'General Physician (GP) — best first point of contact for any unclear concern',
     urgency: 'medium',
     urgencyLabel: '🟡 Medium — Visit a clinic within 24–48 hours',
     where: '🏥 Nearest GP Clinic or Community Health Center',
     cost: 'Low',
-    risk: 'Ignoring unexplained symptoms may allow an underlying condition to worsen undetected.',
+    risk: 'Ignoring unclear symptoms may allow an underlying condition to develop undetected.',
     advice: [
-      'Visit a local GP clinic — they can perform an initial examination and order the right tests',
-      'Keep a note of when symptoms started, their intensity, and any changes',
-      'Avoid self-medicating with antibiotics without a doctor\'s prescription'
+      'Visit a local GP clinic — they will examine you and order any necessary tests',
+      'Write down when symptoms started, how they feel, and any changes over time',
+      'Do not self-medicate based on guesswork — professional assessment is always safer'
     ],
-    dhaka: 'A GP consultation in most Dhaka clinics costs between ৳200–৳600 and is the safest first step for any unfamiliar symptom.'
+    dhaka: 'A GP consultation is the safest and most affordable first step in Dhaka. Let a doctor guide your next steps based on a proper assessment.'
   };
 }
 
@@ -781,24 +838,37 @@ function removeChips() {
 function renderResultCard(c) {
   const urgencyClass = c.urgency === 'high' ? 'high' : c.urgency === 'medium' ? 'medium' : 'low';
   const costIcon = c.cost === 'High' ? '৳৳৳' : c.cost === 'Medium' ? '৳৳' : '৳';
+  const riskLevelClass = c.riskLevel === 'High' ? 'high' : c.riskLevel === 'Medium' ? 'medium' : 'low';
+  const riskLevelIcon = c.riskLevel === 'High' ? '🔴' : c.riskLevel === 'Medium' ? '🟡' : '🟢';
 
   const adviceHtml = c.advice.map(a => `<li>${escHtml(a)}</li>`).join('');
 
   return `
     <div class="result-card">
-      <div class="card-header">
-        🩺 Disha's Healthcare Guidance
+
+      <div class="risk-level-banner ${riskLevelClass}">
+        <span class="risk-level-label">Risk Level</span>
+        <span class="risk-level-value">${riskLevelIcon} ${escHtml(c.riskLevel)}</span>
       </div>
+
+      <div class="card-header">
+        🩺 Disha's Safety Guidance
+      </div>
+
+      <div class="safety-notice">
+        ⚠️ Disha does not diagnose. The information below is general guidance only — always consult a qualified doctor.
+      </div>
+
       <div class="card-body">
         <div class="card-row">
-          <span class="card-label">🔍 Possible Issue</span>
+          <span class="card-label">### Possible Issue</span>
           <span class="card-value">${escHtml(c.issue)}</span>
         </div>
 
         <div class="card-divider"></div>
 
         <div class="card-row">
-          <span class="card-label">👨‍⚕️ Recommended Specialist</span>
+          <span class="card-label">### Recommended Specialist</span>
           <span class="card-value">${escHtml(c.specialist)}</span>
         </div>
 
@@ -813,7 +883,7 @@ function renderResultCard(c) {
         </div>
 
         <div class="card-row">
-          <span class="card-label">💰 Cost Level</span>
+          <span class="card-label">💰 Estimated Cost Level</span>
           <span class="cost-badge">${costIcon} ${escHtml(c.cost)}</span>
         </div>
 
@@ -825,7 +895,7 @@ function renderResultCard(c) {
         </div>
 
         <div class="card-row">
-          <span class="card-label">✅ Advice</span>
+          <span class="card-label">✅ General Guidance</span>
           <ul class="advice-list">${adviceHtml}</ul>
         </div>
 
