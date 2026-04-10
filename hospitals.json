@@ -1,0 +1,101 @@
+[
+    {
+        "id": "h_001",
+        "name": "Dhaka Medical College Hospital (DMCH)",
+        "location": "Dhaka",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "General Physician", "Neurology", "Cardiology", "Surgery / Emergency", "Orthopedics", "Gastroenterology", "Pulmonology", "Ophthalmology", "Obstetrics & Gynecology", "Pediatrics", "Dermatology"],
+        "address": "Secretariat Road, Dhaka 1000",
+        "contact_number": "16263"
+    },
+    {
+        "id": "h_002",
+        "name": "Square Hospitals Ltd.",
+        "location": "Dhaka, Panthapath",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Obstetrics & Gynecology", "General Physician"],
+        "address": "18/F, Bir Uttam Qazi Nuruzzaman Sarak, Dhaka 1205",
+        "contact_number": "+880 9610-010616"
+    },
+    {
+        "id": "h_003",
+        "name": "Labaid Cardiac Hospital",
+        "location": "Dhaka, Dhanmondi",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "Cardiology", "Pulmonology"],
+        "address": "House-01, Road-04, Dhanmondi, Dhaka 1205",
+        "contact_number": "+880 1766-662111"
+    },
+    {
+        "id": "h_004",
+        "name": "National Institute of Neurosciences (NINS)",
+        "location": "Dhaka, Agargaon",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "Neurology"],
+        "address": "Sher-e-Bangla Nagar, Agargaon, Dhaka",
+        "contact_number": "+880 2-9140752"
+    },
+    {
+        "id": "h_005",
+        "name": "Ispahani Islamia Eye Institute",
+        "location": "Dhaka, Farmgate",
+        "has_er": false,
+        "departments": ["Ophthalmology", "General Physician"],
+        "address": "Khamar Bari Rd, Dhaka 1215",
+        "contact_number": "+880 9610-998333"
+    },
+    {
+        "id": "h_006",
+        "name": "Evercare Hospital Chattogram",
+        "location": "Chattogram",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "Cardiology", "General Physician", "Orthopedics", "Surgery / Emergency"],
+        "address": "Plot No. H1, Ananna Residential Area, CDA, Hathazari, Chattogram",
+        "contact_number": "10663"
+    },
+    {
+        "id": "h_007",
+        "name": "Chittagong Medical College Hospital",
+        "location": "Chattogram",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "General Physician", "Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Surgery / Emergency"],
+        "address": "K.B. Fazlul Kader Road, Panchlaish, Chattogram",
+        "contact_number": "+880 31-2550302"
+    },
+    {
+        "id": "h_008",
+        "name": "Sylhet MAG Osmani Medical College",
+        "location": "Sylhet",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "General Physician", "Surgery / Emergency", "Orthopedics", "Cardiology", "Pulmonology", "Obstetrics & Gynecology"],
+        "address": "Kajolshah, Sylhet 3100",
+        "contact_number": "+880 821-713667"
+    },
+    {
+        "id": "h_009",
+        "name": "Al Haramain Hospital",
+        "location": "Sylhet",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "General Physician", "Cardiology", "Neurology", "Pediatrics"],
+        "address": "Mir Box Tula Road, Sylhet",
+        "contact_number": "+880 1931-225555"
+    },
+    {
+        "id": "h_010",
+        "name": "Popular Diagnostic Centre",
+        "location": "Dhaka, Mirpur",
+        "has_er": false,
+        "departments": ["General Physician", "Gastroenterology", "Dermatology", "Pediatrics"],
+        "address": "House # 02, Block # A, Section # 10, Mirpur, Dhaka",
+        "contact_number": "+880 9613-787806"
+    },
+    {
+        "id": "h_011",
+        "name": "Sheikh Hasina National Institute of Burn and Plastic Surgery",
+        "location": "Dhaka",
+        "has_er": true,
+        "departments": ["Emergency Medicine", "Dermatology / Emergency", "Surgery / Emergency"],
+        "address": "Bakshibazar, Dhaka 1000",
+        "contact_number": "+880 2-55112108"
+    }
+]
